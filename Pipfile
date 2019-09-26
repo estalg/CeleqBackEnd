@@ -10,7 +10,7 @@ flask = "*"
 sqlalchemy = "*"
 marshmallow = "*"
 flask-cors = "*"
-mysqlclient = "*"
+pymysql = "*"
 
 [requires]
 python_version = "3.7"
