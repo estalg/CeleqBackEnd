@@ -37,7 +37,7 @@ def login():
                 permisos.append(permiso)
 
     for i in range(len(permisos)):
-        permisos[i] = permisos[i].permiso
+        permisos[i] = str(permisos[i].permiso)
 
     payload = {'cedula': usuario_base.cedula, 'correo': usuario_base.correo, 'telefono': usuario_base.telefono,
                'nombre': usuario_base.nombre, 'apellido1': usuario_base.apellido1, 'apellido2': usuario_base.apellido2,
