@@ -20,6 +20,8 @@ class Solicitud(Base):
     unidad = Column(String)
     cedulaUsuario = Column(String)
 
+    reactivosSolicitados = relationship('Reactivos_Solicitados', primaryjoin='and_(Solicitud.id==Reactivos_Solicitados.idSolicitud, Solicitud.anno==Reactivos_Solicitados.annoSolicitud)', backref="solicitud_react_crist")
+
     def __init__(self, id, anno, fechaSolicitud, fechaAprobacion, estado, nombreSolicitante, nombreEncargado, correoSolicitante, observacion, unidad, cedulaUsuario):
         self.id = id
         self.anno = anno
@@ -87,4 +89,5 @@ class SolicitudSchema(Schema):
     observacion = fields.Str()
     unidad = fields.Str()
     cedulaUsuario = fields.Str()
-    reactivos = relationship("")
+    reactivosSolicitados = relationship("Reactivos_Solicitados", back_populates="solicitud_react_crist")
+    cristaleriaSolicitada = relationship("Cristaleria_Solicitada", back_populates="solicitud_react_crist")
