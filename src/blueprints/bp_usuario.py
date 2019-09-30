@@ -1,10 +1,14 @@
 from flask import Blueprint, jsonify, request
+
+from src.entities.usuariosgrupos import UsuariosGrupos
 from ..entities.entity import Session
 from ..entities.usuario import Usuario, UsuarioSchema
+from flask_jwt_extended import jwt_required
 
 bp_usuario = Blueprint('bp_usuarios', __name__)
 
 @bp_usuario.route('/usuarios')
+@jwt_required
 def consultar_Usuario():
     session = Session()
     objeto_Usuario = session.query(Usuario).all()
@@ -16,6 +20,7 @@ def consultar_Usuario():
     return jsonify(usuario)
 
 @bp_usuario.route('/usuarios/id', methods=['GET'])
+@jwt_required
 def consultar_usuario_id():
     cedula = request.args.get('cedula')
     session = Session()
@@ -27,6 +32,7 @@ def consultar_usuario_id():
     return jsonify(usuario)
 
 @bp_usuario.route('/usuarios', methods=['POST'])
+@jwt_required
 def agregar_usuario():
     # mount exam object
     posted_usuario = UsuarioSchema(only=('cedula', 'correo', 'telefono', 'nombre', 'apellido1', 'apellido2', 'contrasenna'))\
@@ -45,6 +51,7 @@ def agregar_usuario():
     return jsonify(nuevo_usuario), 201
 
 @bp_usuario.route('/usuarios/editar', methods=['POST'])
+@jwt_required
 def editar_usuario():
     posted_usuario = UsuarioSchema(only=('cedula', 'correo', 'telefono', 'nombre', 'apellido1', 'apellido2', 'contrasenna'))\
         .load(request.get_json())
@@ -73,6 +80,7 @@ def editar_usuario():
     return jsonify(usuario)
 
 @bp_usuario.route('/usuarios', methods=['DELETE'])
+@jwt_required
 def eliminar_usuario():
     cedula = request.args.get('cedula')
     session = Session()
@@ -85,3 +93,10 @@ def eliminar_usuario():
 
     session.close()
     return '', 200
+
+@bp_usuario.route('/usuarios/grupos', methods=['GET'])
+@jwt_required
+def consultar_usuarios_grupos():
+    session = Session()
+    usuarios = session.query(Usuario, UsuariosGrupos).filter(Usuario.cedula == UsuariosGrupos.usuario).all()
+    print(usuarios)
