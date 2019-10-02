@@ -8,6 +8,7 @@ from .blueprints.bp_autenticacion import bp_autenticacion
 from .blueprints.regencia.bp_cristaleria import bp_cristaleria
 from .blueprints.regencia.bp_reactivo import bp_reactivo
 from .blueprints.bp_files import bp_files
+from .blueprints.regencia.bp_solicitudes_regencia import bp_solicitudes_regencia
 
 # creating the Flask application
 app = Flask(__name__)
@@ -24,6 +25,7 @@ app.register_blueprint(bp_autenticacion)
 app.register_blueprint(bp_cristaleria)
 app.register_blueprint(bp_reactivo)
 app.register_blueprint(bp_files)
+app.register_blueprint(bp_solicitudes_regencia)
 
 if __name__ == '__main__':
     app.run()

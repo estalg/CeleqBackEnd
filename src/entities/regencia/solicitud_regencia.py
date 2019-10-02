@@ -1,6 +1,9 @@
 from sqlalchemy import Column, String, Integer, Date, ForeignKey
+
+from src.entities.regencia.cristaleria import CristaleriaSchema
 from ..entity import Base
 from marshmallow import Schema, fields
+from .reactivo import ReactivoSchema
 
 
 class SolicitudRegencia(Base):
@@ -18,6 +21,9 @@ class SolicitudRegencia(Base):
 
     unidad = Column(String, ForeignKey("unidad.nombre"))
     cedulaUsuario = Column(String, ForeignKey('usuarios.cedula'))
+
+    reactivos_solicitados = []
+    cristaleria_solicitada = []
 
     def __init__(self, id, anno, fechaSolicitud, fechaAprobacion, estado, nombreSolicitante, nombreEncargado,
                  correoSolicitante, observacion, unidad, cedulaUsuario):
@@ -44,3 +50,6 @@ class SolicitudRegenciaSchema(Schema):
     nombreEncargado = fields.Str()
     correoSolicitante = fields.Str()
     observacion = fields.Str()
+
+    reactivos_solicitados = fields.List(fields.Nested(ReactivoSchema))
+    cristaleria_solicitada = fields.List(fields.Nested(CristaleriaSchema))
