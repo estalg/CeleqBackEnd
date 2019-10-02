@@ -37,7 +37,8 @@ def aprobar_solicitud():
     session = Session()
     objeto_solicitudMantenimiento = session.query(SolicitudMantenimiento).get((id, anno))
     schema = SolicitudMantenimientoSchema()
-
+    if objeto_solicitudMantenimiento is None:
+        return "Solicitud no encontrada", 404
 
 
 @bp_solicitudMantenimiento.route('/solicitudMantenimiento/id', methods=['GET'])
