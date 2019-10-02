@@ -17,7 +17,7 @@ def consultar_SolicitudMantenimiento():
     session.close()
     return jsonify(solicitudMantenimiento)
 
-@bp_solicitudMantenimiento.route('/solicitudMantenimiento/pendiente')
+@bp_solicitudMantenimiento.route('/solicitudMantenimiento/pendientes')
 #@jwt_required
 def consultar_SolicitudMantenimiento_pendientes():
     session = Session()
@@ -29,17 +29,115 @@ def consultar_SolicitudMantenimiento_pendientes():
     session.close()
     return jsonify(solicitudMantenimiento)
 
-@bp_solicitudMantenimiento.route('solicitudMantenimiento/aprobar')
+@bp_solicitudMantenimiento.route('/solicitudMantenimiento/analizadas')
+#@jwt_required
+def consultar_SolicitudMantenimiento_analizadas():
+    session = Session()
+
+
+@bp_solicitudMantenimiento.route('/solicitudMantenimiento/finalizadas')
+#@jwt_required
+
+@bp_solicitudMantenimiento.route('/solicitudMantenimiento/aprobar', methods=['POST'])
 #@jwt_required
 def aprobar_solicitud():
-    id = request.args.get('id')
-    anno = request.args.get('anno')
     session = Session()
-    objeto_solicitudMantenimiento = session.query(SolicitudMantenimiento).get((id, anno))
-    schema = SolicitudMantenimientoSchema()
+
+    objeto_solicitudMantenimiento = session.query(SolicitudMantenimiento).get((request.json['id'], request.json['anno']))
+
     if objeto_solicitudMantenimiento is None:
         return "Solicitud no encontrada", 404
 
+    objeto_solicitudMantenimiento.estado = request.json['estado']
+
+    session.add(objeto_solicitudMantenimiento)
+
+    if (request.json['estado'] == 'Aprobada'):
+        nueva_solicitudAprobada = SolicitudMantenimientoAprobada(request.json['id'],request.json['anno'], request.json['fechaAprobacion'],
+                                                                 request.json['personaAsignada'], request.json['observacionesAprob'],'','','','',
+                                                                 '','','')
+        session.add(nueva_solicitudAprobada)
+
+        session.commit()
+
+        nuevo_solicitudMantenimientoAprobada = SolicitudMantenimientoAprobadaSchema().dump(nueva_solicitudAprobada)
+        session.close()
+
+        return jsonify(nuevo_solicitudMantenimientoAprobada)
+    else:
+        nueva_solicitudRechazada = SolicitudMantenimientoRechazada(request.json['id'],request.json['anno'], request.json['motivoRechazo'])
+        session.add(nueva_solicitudRechazada)
+
+        session.commit()
+
+        nuevo_solicitudMantenimientoRechazada = SolicitudMantenimientoRechazadaSchema().dump(nueva_solicitudRechazada)
+        session.close()
+
+        return jsonify(nuevo_solicitudMantenimientoRechazada)
+
+@bp_solicitudMantenimiento.route('/solicitudMantenimiento/analizar', methods=['POST'])
+#@jwt_required
+def analizar_solicitud():
+    session = Session()
+
+    objeto_solicitudMantenimiento = session.query(SolicitudMantenimiento).get(
+        (request.json['id'], request.json['anno']))
+
+    if objeto_solicitudMantenimiento is None:
+        return "Solicitud no encontrada", 404
+
+    objeto_solicitudMantenimiento.estado = request.json['estado']
+
+    session.add(objeto_solicitudMantenimiento)
+
+    objeto_solicitudMantenimientoAnalizada = session.query(SolicitudMantenimientoAprobada).get((request.json['id'], request.json['anno']))
+
+    objeto_solicitudMantenimientoAnalizada.insumos = request.json['insumos']
+    objeto_solicitudMantenimientoAnalizada.costoEstimado = request.json['costoEstimado']
+    objeto_solicitudMantenimientoAnalizada.observacionesAnalisis = request.json['observacionesAnalisis']
+    objeto_solicitudMantenimientoAnalizada.ubicacionArchivo = request.json['ubicacion']
+
+    session.add(objeto_solicitudMantenimientoAnalizada)
+
+    session.commit()
+
+    solicitudMantenimientoAprobada_editada = SolicitudMantenimientoAprobadaSchema().dump(objeto_solicitudMantenimientoAnalizada)
+
+    session.close()
+
+    return jsonify(solicitudMantenimientoAprobada_editada)
+
+@bp_solicitudMantenimiento.route('/solicitudMantenimiento/finalizar', methods=['POST'])
+#@jwt_required
+def finalizar_solicitud():
+    session = Session()
+
+    objeto_solicitudMantenimiento = session.query(SolicitudMantenimiento).get(
+        (request.json['id'], request.json['anno']))
+
+    if objeto_solicitudMantenimiento is None:
+        return "Solicitud no encontrada", 404
+
+    objeto_solicitudMantenimiento.estado = request.json['estado']
+
+    session.add(objeto_solicitudMantenimiento)
+
+    objeto_solicitudMantenimientoFinalizada = session.query(SolicitudMantenimientoAprobada).get(
+        (request.json['id'], request.json['anno']))
+
+    objeto_solicitudMantenimientoFinalizada.periodoEjecucion = request.json['periodoEjecucion']
+    objeto_solicitudMantenimientoFinalizada.observacionesFinales = request.json['observacionesFinales']
+
+    session.add(objeto_solicitudMantenimientoFinalizada)
+
+    session.commit()
+
+    solicitudMantenimientoAprobada_editada = SolicitudMantenimientoAprobadaSchema().dump(
+        objeto_solicitudMantenimientoFinalizada)
+
+    session.close()
+
+    return jsonify(solicitudMantenimientoAprobada_editada)
 
 @bp_solicitudMantenimiento.route('/solicitudMantenimiento/id', methods=['GET'])
 #@jwt_required

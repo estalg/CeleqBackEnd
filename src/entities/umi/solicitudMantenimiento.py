@@ -90,7 +90,7 @@ class SolicitudMantenimientoAprobadaSchema(Schema):
     idSolicitud = fields.Int()
     annoSolicitud = fields.Int()
     fechaAprobacion = fields.Str()
-    personaAsignada = fields.Date()
+    personaAsignada = fields.Str()
     observacionesAprob = fields.Str()
     recibido = fields.Str()
     insumos = fields.Str()
