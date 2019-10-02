@@ -4,9 +4,8 @@ from flask_jwt_extended import create_access_token, create_refresh_token, jwt_re
 
 from ..entities.entity import Session
 from ..entities.usuario import Usuario, UsuarioSchema
-from ..entities.usuariosgrupos import UsuariosGrupos, UsuariosGruposSchema
-from ..entities.grupo import Grupo, GruposSchema
-from ..entities.grupospermisos import GruposPermisos, GruposPermisosSchema
+from ..entities.usuariosgrupos import UsuariosGrupos
+from ..entities.grupospermisos import GruposPermisos
 import hashlib
 
 bp_autenticacion = Blueprint('bp_autenticacion', __name__)

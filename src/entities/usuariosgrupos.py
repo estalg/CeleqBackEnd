@@ -1,6 +1,8 @@
 from sqlalchemy import Column, String, ForeignKey
 from sqlalchemy.orm import relationship
 
+from src.entities.grupo import GruposSchema
+from src.entities.usuario import UsuarioSchema
 from .entity import Base
 from marshmallow import Schema, fields
 
@@ -19,3 +21,6 @@ class UsuariosGrupos(Base):
 class UsuariosGruposSchema(Schema):
     usuario = fields.Str()
     grupo = fields.Str()
+
+    usuarios = fields.List(fields.Nested(UsuarioSchema))
+    grupos = fields.List(fields.Nested(GruposSchema))

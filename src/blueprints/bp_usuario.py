@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request
 
-from src.entities.usuariosgrupos import UsuariosGrupos
+from src.entities.usuariosgrupos import UsuariosGrupos, UsuariosGruposSchema
 from ..entities.entity import Session
 from ..entities.usuario import Usuario, UsuarioSchema
 from flask_jwt_extended import jwt_required
@@ -97,6 +97,12 @@ def eliminar_usuario():
 @bp_usuario.route('/usuarios/grupos', methods=['GET'])
 @jwt_required
 def consultar_usuarios_grupos():
+    grupo = request.args.get('grupo')
     session = Session()
-    usuarios = session.query(Usuario, UsuariosGrupos).filter(Usuario.cedula == UsuariosGrupos.usuario).all()
-    print(usuarios)
+    usuarios_base = session.query(Usuario).filter(Usuario.cedula == UsuariosGrupos.usuario).filter(UsuariosGrupos.grupo == grupo).all()
+
+    schema = UsuarioSchema(many=True)
+    usuarios = schema.dump(usuarios_base)
+
+    session.close()
+    return jsonify(usuarios), 200
