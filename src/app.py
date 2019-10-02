@@ -10,6 +10,7 @@ from .blueprints.regencia.bp_reactivo import bp_reactivo
 from .blueprints.regimen_becario.bp_arancel import bp_arancel
 from .blueprints.regimen_becario.bp_presupuesto import bp_presupuesto
 from .blueprints.umi.bp_solicitudMantenimiento import bp_solicitudMantenimiento
+from .blueprints.bp_files import bp_files
 
 # creating the Flask application
 app = Flask(__name__)
@@ -28,6 +29,7 @@ app.register_blueprint(bp_reactivo)
 app.register_blueprint(bp_arancel)
 app.register_blueprint(bp_presupuesto)
 app.register_blueprint(bp_solicitudMantenimiento)
+app.register_blueprint(bp_files)
 
 if __name__ == '__main__':
     app.run()
