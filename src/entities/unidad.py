@@ -12,10 +12,10 @@ class Unidad(Base):
 
     def __init__(self, nombre, encargado):
         self.nombre = nombre
-        self.encargado_id = encargado
+        self.encargado = encargado
 
 
 
-class ReactivoSchema(Schema):
+class UnidadSchema(Schema):
     nombre = fields.Str()
     encargado = fields.Str()

@@ -11,6 +11,8 @@ from .blueprints.regimen_becario.bp_arancel import bp_arancel
 from .blueprints.regimen_becario.bp_presupuesto import bp_presupuesto
 from .blueprints.umi.bp_solicitudMantenimiento import bp_solicitudMantenimiento
 from .blueprints.bp_files import bp_files
+from .blueprints.regencia.bp_solicitudes_regencia import bp_solicitudes_regencia
+from .blueprints.bp_unidad import bp_unidad
 
 # creating the Flask application
 app = Flask(__name__)
@@ -30,6 +32,8 @@ app.register_blueprint(bp_arancel)
 app.register_blueprint(bp_presupuesto)
 app.register_blueprint(bp_solicitudMantenimiento)
 app.register_blueprint(bp_files)
+app.register_blueprint(bp_solicitudes_regencia)
+app.register_blueprint(bp_unidad)
 
 if __name__ == '__main__':
     app.run()
