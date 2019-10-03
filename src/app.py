@@ -9,6 +9,7 @@ from .blueprints.regencia.bp_cristaleria import bp_cristaleria
 from .blueprints.regencia.bp_reactivo import bp_reactivo
 from .blueprints.bp_files import bp_files
 from .blueprints.regencia.bp_solicitudes_regencia import bp_solicitudes_regencia
+from .blueprints.bp_unidad import bp_unidad
 
 # creating the Flask application
 app = Flask(__name__)
@@ -26,6 +27,7 @@ app.register_blueprint(bp_cristaleria)
 app.register_blueprint(bp_reactivo)
 app.register_blueprint(bp_files)
 app.register_blueprint(bp_solicitudes_regencia)
+app.register_blueprint(bp_unidad)
 
 if __name__ == '__main__':
     app.run()

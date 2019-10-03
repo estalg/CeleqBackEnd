@@ -10,17 +10,17 @@ class ReactivosSolicitados(Base):
     annoSolicitud = Column(Integer, ForeignKey("solicitud_react_crist.anno"), primary_key=True)
     nombreReactivo = Column(String, ForeignKey("reactivos.nombre"), primary_key=True)
     pureza = Column(String, ForeignKey("reactivos.pureza"), primary_key=True)
-    cantidad = Column(Integer)
+    cantidadSolicitada = Column(Integer)
     estadoEnSolicitud = Column(String)
     justificacionRechazo = Column(String)
 
-    def __init__(self, idSolicitud, annoSolicitud, nombreReactivo, pureza, cantidad, estadoEnSolicitud,
+    def __init__(self, idSolicitud, annoSolicitud, nombreReactivo, pureza, cantidadSolicitada, estadoEnSolicitud,
                  justificacionRechazo):
         self.idSolicitud = idSolicitud
         self.annoSolicitud = annoSolicitud
         self.nombreReactivo = nombreReactivo
         self.pureza = pureza
-        self.cantidad = cantidad
+        self.cantidad = cantidadSolicitada
         self.estadoEnSolicitud = estadoEnSolicitud
         self.justificacionRechazo = justificacionRechazo
 
@@ -30,6 +30,6 @@ class ReactivosSolicitadosSchema(Schema):
     annoSolicitud = fields.Int()
     nombreReactivo = fields.Str()
     pureza = fields.Str()
-    cantidad = fields.Int()
+    cantidadSolicitada = fields.Int()
     estadoEnSolicitud = fields.Str()
     justificacionRechazo = fields.Str()

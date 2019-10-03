@@ -4,6 +4,7 @@ from src.entities.regencia.cristaleria import CristaleriaSchema
 from ..entity import Base
 from marshmallow import Schema, fields
 from .reactivo import ReactivoSchema
+from ..unidad import Unidad
 
 
 class SolicitudRegencia(Base):
@@ -50,6 +51,8 @@ class SolicitudRegenciaSchema(Schema):
     nombreEncargado = fields.Str()
     correoSolicitante = fields.Str()
     observacion = fields.Str()
+    unidad = fields.Str()
+    cedulaUsuario = fields.Str()
 
     reactivos_solicitados = fields.List(fields.Nested(ReactivoSchema))
     cristaleria_solicitada = fields.List(fields.Nested(CristaleriaSchema))
