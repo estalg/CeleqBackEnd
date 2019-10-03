@@ -2,6 +2,8 @@ from flask import Blueprint, jsonify, request
 from src.entities.entity import Session
 from ...entities.umi.solicitudMantenimiento import SolicitudMantenimiento, SolicitudMantenimientoAprobada, SolicitudMantenimientoRechazada,\
     SolicitudMantenimientoSchema, SolicitudMantenimientoAprobadaSchema, SolicitudMantenimientoRechazadaSchema
+from ...entities.usuario import Usuario
+from ...entities.usuariosgrupos import UsuariosGrupos
 
 bp_solicitudMantenimiento = Blueprint('bp_solicitudMantenimiento', __name__)
 
@@ -29,14 +31,96 @@ def consultar_SolicitudMantenimiento_pendientes():
     session.close()
     return jsonify(solicitudMantenimiento)
 
-@bp_solicitudMantenimiento.route('/solicitudMantenimiento/analizadas')
+@bp_solicitudMantenimiento.route('/solicitudMantenimiento/analizadas', methods=['GET'])
 #@jwt_required
 def consultar_SolicitudMantenimiento_analizadas():
     session = Session()
+    esAdmin = False
+    cedula = request.args.get('cedula')
 
+    objeto_usuarioGrupo = session.query(UsuariosGrupos).filter(UsuariosGrupos.usuario == cedula).all()
 
-@bp_solicitudMantenimiento.route('/solicitudMantenimiento/finalizadas')
+    for ug in objeto_usuarioGrupo:
+        if(ug.grupo == 'Administrador'):
+            esAdmin = True
+
+    if not esAdmin:
+        objeto_solicitudMantenimientoAnalizada = session.query(SolicitudMantenimiento, SolicitudMantenimientoAprobada).filter(SolicitudMantenimiento.id == SolicitudMantenimientoAprobada.idSolicitud,
+        SolicitudMantenimiento.anno == SolicitudMantenimientoAprobada.annoSolicitud).filter(SolicitudMantenimiento.estado == 'Analizada').all()
+
+        for solicitud in objeto_solicitudMantenimientoAnalizada:
+            objeto_usuario = session.query(Usuario).get(solicitud.SolicitudMantenimientoAprobada.personaAsignada)
+            solicitud.SolicitudMantenimientoAprobada.nombrePersonaAsignada = (objeto_usuario.nombre + ' ' + objeto_usuario.apellido1 + ' ' + objeto_usuario.apellido2)
+
+        solicitudes_aprobadas = []
+        for solicitud in objeto_solicitudMantenimientoAnalizada:
+            solicitudes_aprobadas.append(solicitud.SolicitudMantenimientoAprobada)
+
+        schema = SolicitudMantenimientoAprobadaSchema(many=True)
+
+        solicitudAnalizada = schema.dump(solicitudes_aprobadas)
+    else:
+        objeto_solicitudMantenimientoAnalizada = session.query(SolicitudMantenimiento,
+                                                               SolicitudMantenimientoAprobada).filter(
+            SolicitudMantenimiento.id == SolicitudMantenimientoAprobada.idSolicitud,
+            SolicitudMantenimiento.anno == SolicitudMantenimientoAprobada.annoSolicitud).filter(
+            SolicitudMantenimiento.estado == 'Analizada').filter(SolicitudMantenimientoAprobada.personaAsignada == cedula).all()
+
+        for solicitud in objeto_solicitudMantenimientoAnalizada:
+            objeto_usuario = session.query(Usuario).get(solicitud.SolicitudMantenimientoAprobada.personaAsignada)
+            solicitud.SolicitudMantenimientoAprobada.nombrePersonaAsignada = (
+                        objeto_usuario.nombre + ' ' + objeto_usuario.apellido1 + ' ' + objeto_usuario.apellido2)
+
+        solicitudes_aprobadas = []
+        for solicitud in objeto_solicitudMantenimientoAnalizada:
+            solicitudes_aprobadas.append(solicitud.SolicitudMantenimientoAprobada)
+
+        schema = SolicitudMantenimientoAprobadaSchema(many=True)
+
+        solicitudAnalizada = schema.dump(solicitudes_aprobadas)
+
+    session.close()
+
+    return jsonify(solicitudAnalizada)
+
+@bp_solicitudMantenimiento.route('/solicitudMantenimiento/aprobadas')
 #@jwt_required
+def consultar_SolicitudMantenimiento_aprobadas():
+    session = Session()
+    esAdmin = False
+    cedula = request.args.get('cedula')
+
+    objeto_usuarioGrupo = session.query(UsuariosGrupos).filter(UsuariosGrupos.usuario == cedula).all()
+
+    for ug in objeto_usuarioGrupo:
+        if(ug.grupo == 'Administrador'):
+            esAdmin = True
+
+    if(esAdmin):
+        objeto_solicitudMantenimientoAnalizada = session.query(SolicitudMantenimientoAprobada).all()
+
+        for solicitud in objeto_solicitudMantenimientoAnalizada:
+            objeto_usuario = session.query(Usuario).get(solicitud.personaAsignada)
+            solicitud.nombrePersonaAsignada = (objeto_usuario.nombre + ' ' + objeto_usuario.apellido1 + ' ' + objeto_usuario.apellido2)
+
+        schema = SolicitudMantenimientoAprobadaSchema(many=True)
+
+        solicitudAnalizada = schema.dump(objeto_solicitudMantenimientoAnalizada)
+    else:
+        objeto_solicitudMantenimientoAnalizada = session.query(SolicitudMantenimientoAprobada).filter(SolicitudMantenimientoAprobada.personaAsignada == cedula).all()
+
+        for solicitud in objeto_solicitudMantenimientoAnalizada:
+            objeto_usuario = session.query(Usuario).get(solicitud.personaAsignada)
+            solicitud.nombrePersonaAsignada = (
+                        objeto_usuario.nombre + ' ' + objeto_usuario.apellido1 + ' ' + objeto_usuario.apellido2)
+
+        schema = SolicitudMantenimientoAprobadaSchema(many=True)
+
+        solicitudAnalizada = schema.dump(objeto_solicitudMantenimientoAnalizada)
+
+    session.close()
+
+    return jsonify(solicitudAnalizada)
 
 @bp_solicitudMantenimiento.route('/solicitudMantenimiento/aprobar', methods=['POST'])
 #@jwt_required

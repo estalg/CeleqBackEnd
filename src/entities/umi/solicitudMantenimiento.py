@@ -47,7 +47,8 @@ class SolicitudMantenimientoAprobada(Base):
     periodoEjecucion = Column(String)
     observacionesFinales = Column(String)
 
-    def __init__(self, idSolicitud, annoSolicitud, fechaAprobacion, personaAsignada, observacionesAprob, recibido, insumos, costoEstimado, observacionesAnalisis, ubicacionArchivo, periodoEjecucion, observacionesFinales):
+    def __init__(self, idSolicitud, annoSolicitud, fechaAprobacion, personaAsignada, observacionesAprob,
+                 recibido, insumos, costoEstimado, observacionesAnalisis, ubicacionArchivo, periodoEjecucion, observacionesFinales, nombrePersonaAsignada):
         self.idSolicitud = idSolicitud
         self.annoSolicitud = annoSolicitud
         self.fechaAprobacion = fechaAprobacion
@@ -99,6 +100,7 @@ class SolicitudMantenimientoAprobadaSchema(Schema):
     ubicacionArchivo = fields.Str()
     periodoEjecucion = fields.Str()
     observacionesFinales = fields.Str()
+    nombrePersonaAsignada = fields.Str()
 
 class SolicitudMantenimientoRechazadaSchema(Schema):
     idSolicitud = fields.Int()
