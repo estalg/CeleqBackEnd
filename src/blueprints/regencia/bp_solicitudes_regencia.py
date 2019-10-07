@@ -115,7 +115,7 @@ def agregar_solicitud_regencia():
         return 'Ha ocurrido un error al crear la solicitud', 400
 
 @bp_solicitudes_regencia.route('/solicitudRegencia/editar', methods=['POST'])
-
+@jwt_required
 def editar_solicitud_regencia():
     datos_solicitud = request.get_json()
     session = Session()
