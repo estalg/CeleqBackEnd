@@ -1,10 +1,13 @@
 from flask import Blueprint, jsonify, request
+from flask_jwt_extended import jwt_required
+
 from ...entities.regencia.reactivo import Reactivo, ReactivoSchema
 from ...entities.entity import Session
 
 bp_reactivo = Blueprint('bp_reactivo', __name__)
 
 @bp_reactivo.route('/reactivo')
+@jwt_required
 def consultar_Reactivo():
     session = Session()
     objeto_reactivo = session.query(Reactivo).all()
@@ -16,6 +19,7 @@ def consultar_Reactivo():
     return jsonify(reactivo)
 
 @bp_reactivo.route('/reactivo/id', methods=['GET'])
+@jwt_required
 def consultar_reactivo_id():
     nombre = request.args.get('nombre')
     pureza = request.args.get('pureza')
@@ -28,6 +32,7 @@ def consultar_reactivo_id():
     return jsonify(reactivo)
 
 @bp_reactivo.route('/reactivo', methods=['POST'])
+@jwt_required
 def agregar_reactivo():
     # mount exam object
     posted_reactivo = ReactivoSchema(only=('nombre', 'pureza', 'cantidad', 'estado', 'estante'))\
@@ -46,6 +51,7 @@ def agregar_reactivo():
     return jsonify(nuevo_reactivo), 201
 
 @bp_reactivo.route('/reactivo/editar', methods=['POST'])
+@jwt_required
 def editar_reactivo():
     posted_reactivo = ReactivoSchema(only=('nombre', 'pureza', 'cantidad', 'estado', 'estante'))\
         .load(request.get_json())
@@ -71,6 +77,7 @@ def editar_reactivo():
     return jsonify(reactivo)
 
 @bp_reactivo.route('/reactivo', methods=['DELETE'])
+@jwt_required
 def eliminar_cristaleria():
     nombre = request.args.get('nombre')
     pureza = request.args.get('pureza')

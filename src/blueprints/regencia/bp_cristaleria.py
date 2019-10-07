@@ -1,10 +1,13 @@
 from flask import Blueprint, jsonify, request
+from flask_jwt_extended import jwt_required
+
 from ...entities.regencia.cristaleria import Cristaleria, CristaleriaSchema
 from ...entities.entity import Session
 
 bp_cristaleria = Blueprint('bp_cristaleria', __name__)
 
 @bp_cristaleria.route('/cristaleria')
+@jwt_required
 def consultar_Cristaleria():
     session = Session()
     objeto_Cristaleria = session.query(Cristaleria).all()
@@ -16,6 +19,7 @@ def consultar_Cristaleria():
     return jsonify(cristaleria)
 
 @bp_cristaleria.route('/cristaleria/id', methods=['GET'])
+@jwt_required
 def consultar_cristaleria_id():
     nombre = request.args.get('nombre')
     material = request.args.get('material')
@@ -29,6 +33,7 @@ def consultar_cristaleria_id():
     return jsonify(cristaleria)
 
 @bp_cristaleria.route('/cristaleria', methods=['POST'])
+@jwt_required
 def agregar_cristaleria():
     # mount exam object
     posted_cristaleria = CristaleriaSchema(only=('nombre', 'material', 'capacidad', 'cantidad', 'caja'))\
@@ -47,6 +52,7 @@ def agregar_cristaleria():
     return jsonify(nueva_cristaleria), 201
 
 @bp_cristaleria.route('/cristaleria/editar', methods=['POST'])
+@jwt_required
 def editar_cristaleria():
     posted_cristaleria = CristaleriaSchema(only=('nombre', 'material', 'capacidad', 'cantidad', 'caja'))\
         .load(request.get_json())
@@ -71,6 +77,7 @@ def editar_cristaleria():
     return jsonify(cristaleria)
 
 @bp_cristaleria.route('/cristaleria', methods=['DELETE'])
+@jwt_required
 def eliminar_cristaleria():
     nombre = request.args.get('nombre')
     material = request.args.get('material')
