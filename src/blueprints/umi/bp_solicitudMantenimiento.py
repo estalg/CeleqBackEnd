@@ -1,4 +1,6 @@
 from flask import Blueprint, jsonify, request
+from sqlalchemy import func
+
 from src.entities.entity import Session
 from ...entities.umi.solicitudMantenimiento import SolicitudMantenimiento, SolicitudMantenimientoAprobada, SolicitudMantenimientoRechazada,\
     SolicitudMantenimientoSchema, SolicitudMantenimientoAprobadaSchema, SolicitudMantenimientoRechazadaSchema
@@ -239,15 +241,20 @@ def consultar_solicitudMantenimiento_id():
 @bp_solicitudMantenimiento.route('/solicitudMantenimiento', methods=['POST'])
 #@jwt_required
 def agregar_solicitudMantenimiento():
-    # mount exam object
-    posted_solicitudMantenimiento = SolicitudMantenimientoSchema(only=('id', 'anno','nombreSolicitante','telefono','contactoAdicional','urgencia',
-                                                                       'areaTrabajo','lugarTrabajo','descripcionTrabajo','estado'))\
-        .load(request.get_json())
-
-    solicitudMantenimiento = SolicitudMantenimiento(**posted_solicitudMantenimiento)
-
-    # persist exam
     session = Session()
+    datos_solicitud = request.get_json()
+
+    id = session.query(func.max(SolicitudMantenimiento.id)).filter_by(anno=datos_solicitud['anno']).first()[0]
+    if id:
+        id += 1
+    else:
+        id = 1
+
+    solicitudMantenimiento = SolicitudMantenimiento(id, datos_solicitud['anno'], datos_solicitud['nombreSolicitante'], datos_solicitud['telefono'],
+                                                    datos_solicitud['contactoAdicional'], datos_solicitud['urgencia'], datos_solicitud['areaTrabajo'],
+                                                    datos_solicitud['lugarTrabajo'], datos_solicitud['descripcionTrabajo'], datos_solicitud['estado'],
+                                                    datos_solicitud['cedulaUsuario'])
+
     session.add(solicitudMantenimiento)
     session.commit()
 
