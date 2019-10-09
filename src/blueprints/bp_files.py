@@ -4,6 +4,7 @@ from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required
 from werkzeug.utils import secure_filename
 from pathlib import Path
+import uuid
 
 
 bp_files = Blueprint('bp_files', __name__)
@@ -36,6 +37,8 @@ def uploadFile(allowed_files, folder):
     if file and file_extension in allowed_files:
         filename = secure_filename(file.filename)
         path = Path().cwd() / 'files' / folder
+
+        filename = str(uuid.uuid4()) + '_' + filename
 
         if not os.path.exists(path):
             os.makedirs(path)

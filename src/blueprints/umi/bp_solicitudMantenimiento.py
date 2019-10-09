@@ -1,16 +1,19 @@
 from flask import Blueprint, jsonify, request
+from flask_jwt_extended import jwt_required
 from sqlalchemy import func
 
 from src.entities.entity import Session
-from ...entities.umi.solicitudMantenimiento import SolicitudMantenimiento, SolicitudMantenimientoAprobada, SolicitudMantenimientoRechazada,\
+from ...entities.umi.solicitudMantenimiento import SolicitudMantenimiento, SolicitudMantenimientoAprobada, \
+    SolicitudMantenimientoRechazada, \
     SolicitudMantenimientoSchema, SolicitudMantenimientoAprobadaSchema, SolicitudMantenimientoRechazadaSchema
 from ...entities.usuario import Usuario
 from ...entities.usuariosgrupos import UsuariosGrupos
 
 bp_solicitudMantenimiento = Blueprint('bp_solicitudMantenimiento', __name__)
 
+
 @bp_solicitudMantenimiento.route('/solicitudMantenimiento')
-#@jwt_required
+@jwt_required
 def consultar_SolicitudMantenimiento():
     session = Session()
     objeto_solicitudMantenimiento = session.query(SolicitudMantenimiento).all()
@@ -21,11 +24,13 @@ def consultar_SolicitudMantenimiento():
     session.close()
     return jsonify(solicitudMantenimiento)
 
+
 @bp_solicitudMantenimiento.route('/solicitudMantenimiento/pendientes')
-#@jwt_required
+@jwt_required
 def consultar_SolicitudMantenimiento_pendientes():
     session = Session()
-    objeto_solicitudMantenimiento = session.query(SolicitudMantenimiento).filter(SolicitudMantenimiento.estado == 'pendiente').all()
+    objeto_solicitudMantenimiento = session.query(SolicitudMantenimiento).filter(
+        SolicitudMantenimiento.estado == 'pendiente').all()
 
     schema = SolicitudMantenimientoSchema(many=True)
     solicitudMantenimiento = schema.dump(objeto_solicitudMantenimiento)
@@ -33,8 +38,9 @@ def consultar_SolicitudMantenimiento_pendientes():
     session.close()
     return jsonify(solicitudMantenimiento)
 
+
 @bp_solicitudMantenimiento.route('/solicitudMantenimiento/analizadas', methods=['GET'])
-#@jwt_required
+@jwt_required
 def consultar_SolicitudMantenimiento_analizadas():
     session = Session()
     esAdmin = False
@@ -43,16 +49,31 @@ def consultar_SolicitudMantenimiento_analizadas():
     objeto_usuarioGrupo = session.query(UsuariosGrupos).filter(UsuariosGrupos.usuario == cedula).all()
 
     for ug in objeto_usuarioGrupo:
-        if(ug.grupo == 'Administrador'):
+        if (ug.grupo == 'Administrador'):
             esAdmin = True
 
-    if not esAdmin:
-        objeto_solicitudMantenimientoAnalizada = session.query(SolicitudMantenimiento, SolicitudMantenimientoAprobada).filter(SolicitudMantenimiento.id == SolicitudMantenimientoAprobada.idSolicitud,
-        SolicitudMantenimiento.anno == SolicitudMantenimientoAprobada.annoSolicitud).filter(SolicitudMantenimiento.estado == 'Analizada').all()
+    if esAdmin:
+        objeto_solicitudMantenimientoAnalizada = session.query(SolicitudMantenimiento,
+                                                               SolicitudMantenimientoAprobada).filter(
+            SolicitudMantenimiento.id == SolicitudMantenimientoAprobada.idSolicitud,
+            SolicitudMantenimiento.anno == SolicitudMantenimientoAprobada.annoSolicitud).filter(
+            SolicitudMantenimiento.estado == 'Analizada').all()
 
         for solicitud in objeto_solicitudMantenimientoAnalizada:
             objeto_usuario = session.query(Usuario).get(solicitud.SolicitudMantenimientoAprobada.personaAsignada)
-            solicitud.SolicitudMantenimientoAprobada.nombrePersonaAsignada = (objeto_usuario.nombre + ' ' + objeto_usuario.apellido1 + ' ' + objeto_usuario.apellido2)
+            solicitud.SolicitudMantenimientoAprobada.nombrePersonaAsignada = (
+                        objeto_usuario.nombre + ' ' + objeto_usuario.apellido1 + ' ' + objeto_usuario.apellido2)
+            objeto_solicitud = session.query(SolicitudMantenimiento).get(
+                (solicitud.SolicitudMantenimientoAprobada.idSolicitud, solicitud.SolicitudMantenimientoAprobada.annoSolicitud))
+            solicitud.SolicitudMantenimientoAprobada.id = objeto_solicitud.id
+            solicitud.SolicitudMantenimientoAprobada.anno = objeto_solicitud.anno
+            solicitud.SolicitudMantenimientoAprobada.nombreSolicitante = objeto_solicitud.nombreSolicitante
+            solicitud.SolicitudMantenimientoAprobada.telefono = objeto_solicitud.telefono
+            solicitud.SolicitudMantenimientoAprobada.contactoAdicional = objeto_solicitud.contactoAdicional
+            solicitud.SolicitudMantenimientoAprobada.urgencia = objeto_solicitud.urgencia
+            solicitud.SolicitudMantenimientoAprobada.areaTrabajo = objeto_solicitud.areaTrabajo
+            solicitud.SolicitudMantenimientoAprobada.lugarTrabajo = objeto_solicitud.lugarTrabajo
+            solicitud.SolicitudMantenimientoAprobada.descripcionTrabajo = objeto_solicitud.descripcionTrabajo
 
         solicitudes_aprobadas = []
         for solicitud in objeto_solicitudMantenimientoAnalizada:
@@ -66,12 +87,24 @@ def consultar_SolicitudMantenimiento_analizadas():
                                                                SolicitudMantenimientoAprobada).filter(
             SolicitudMantenimiento.id == SolicitudMantenimientoAprobada.idSolicitud,
             SolicitudMantenimiento.anno == SolicitudMantenimientoAprobada.annoSolicitud).filter(
-            SolicitudMantenimiento.estado == 'Analizada').filter(SolicitudMantenimientoAprobada.personaAsignada == cedula).all()
+            SolicitudMantenimiento.estado == 'Analizada').filter(
+            SolicitudMantenimientoAprobada.personaAsignada == cedula).all()
 
         for solicitud in objeto_solicitudMantenimientoAnalizada:
             objeto_usuario = session.query(Usuario).get(solicitud.SolicitudMantenimientoAprobada.personaAsignada)
             solicitud.SolicitudMantenimientoAprobada.nombrePersonaAsignada = (
-                        objeto_usuario.nombre + ' ' + objeto_usuario.apellido1 + ' ' + objeto_usuario.apellido2)
+                    objeto_usuario.nombre + ' ' + objeto_usuario.apellido1 + ' ' + objeto_usuario.apellido2)
+            objeto_solicitud = session.query(SolicitudMantenimiento).get(
+                (solicitud.SolicitudMantenimientoAprobada.idSolicitud, solicitud.SolicitudMantenimientoAprobada.annoSolicitud))
+            solicitud.SolicitudMantenimientoAprobada.id = objeto_solicitud.id
+            solicitud.SolicitudMantenimientoAprobada.anno = objeto_solicitud.anno
+            solicitud.SolicitudMantenimientoAprobada.nombreSolicitante = objeto_solicitud.nombreSolicitante
+            solicitud.SolicitudMantenimientoAprobada.telefono = objeto_solicitud.telefono
+            solicitud.SolicitudMantenimientoAprobada.contactoAdicional = objeto_solicitud.contactoAdicional
+            solicitud.SolicitudMantenimientoAprobada.urgencia = objeto_solicitud.urgencia
+            solicitud.SolicitudMantenimientoAprobada.areaTrabajo = objeto_solicitud.areaTrabajo
+            solicitud.SolicitudMantenimientoAprobada.lugarTrabajo = objeto_solicitud.lugarTrabajo
+            solicitud.SolicitudMantenimientoAprobada.descripcionTrabajo = objeto_solicitud.descripcionTrabajo
 
         solicitudes_aprobadas = []
         for solicitud in objeto_solicitudMantenimientoAnalizada:
@@ -85,8 +118,9 @@ def consultar_SolicitudMantenimiento_analizadas():
 
     return jsonify(solicitudAnalizada)
 
+
 @bp_solicitudMantenimiento.route('/solicitudMantenimiento/aprobadas')
-#@jwt_required
+@jwt_required
 def consultar_SolicitudMantenimiento_aprobadas():
     session = Session()
     esAdmin = False
@@ -95,41 +129,85 @@ def consultar_SolicitudMantenimiento_aprobadas():
     objeto_usuarioGrupo = session.query(UsuariosGrupos).filter(UsuariosGrupos.usuario == cedula).all()
 
     for ug in objeto_usuarioGrupo:
-        if(ug.grupo == 'Administrador'):
+        if (ug.grupo == 'Administrador'):
             esAdmin = True
 
-    if(esAdmin):
-        objeto_solicitudMantenimientoAnalizada = session.query(SolicitudMantenimientoAprobada).all()
+    if esAdmin:
+        objeto_solicitudMantenimientoAnalizada = session.query(SolicitudMantenimiento,
+                                                               SolicitudMantenimientoAprobada).filter(
+            SolicitudMantenimiento.id == SolicitudMantenimientoAprobada.idSolicitud,
+            SolicitudMantenimiento.anno == SolicitudMantenimientoAprobada.annoSolicitud).filter(
+            SolicitudMantenimiento.estado == 'Aprobada').all()
 
         for solicitud in objeto_solicitudMantenimientoAnalizada:
-            objeto_usuario = session.query(Usuario).get(solicitud.personaAsignada)
-            solicitud.nombrePersonaAsignada = (objeto_usuario.nombre + ' ' + objeto_usuario.apellido1 + ' ' + objeto_usuario.apellido2)
+            objeto_usuario = session.query(Usuario).get(solicitud.SolicitudMantenimientoAprobada.personaAsignada)
+            solicitud.SolicitudMantenimientoAprobada.nombrePersonaAsignada = (
+                    objeto_usuario.nombre + ' ' + objeto_usuario.apellido1 + ' ' + objeto_usuario.apellido2)
+            objeto_solicitud = session.query(SolicitudMantenimiento).get(
+                (solicitud.SolicitudMantenimientoAprobada.idSolicitud,
+                 solicitud.SolicitudMantenimientoAprobada.annoSolicitud))
+            solicitud.SolicitudMantenimientoAprobada.id = objeto_solicitud.id
+            solicitud.SolicitudMantenimientoAprobada.anno = objeto_solicitud.anno
+            solicitud.SolicitudMantenimientoAprobada.nombreSolicitante = objeto_solicitud.nombreSolicitante
+            solicitud.SolicitudMantenimientoAprobada.telefono = objeto_solicitud.telefono
+            solicitud.SolicitudMantenimientoAprobada.contactoAdicional = objeto_solicitud.contactoAdicional
+            solicitud.SolicitudMantenimientoAprobada.urgencia = objeto_solicitud.urgencia
+            solicitud.SolicitudMantenimientoAprobada.areaTrabajo = objeto_solicitud.areaTrabajo
+            solicitud.SolicitudMantenimientoAprobada.lugarTrabajo = objeto_solicitud.lugarTrabajo
+            solicitud.SolicitudMantenimientoAprobada.descripcionTrabajo = objeto_solicitud.descripcionTrabajo
+
+        solicitudes_aprobadas = []
+        for solicitud in objeto_solicitudMantenimientoAnalizada:
+            solicitudes_aprobadas.append(solicitud.SolicitudMantenimientoAprobada)
 
         schema = SolicitudMantenimientoAprobadaSchema(many=True)
 
-        solicitudAnalizada = schema.dump(objeto_solicitudMantenimientoAnalizada)
+        solicitudAnalizada = schema.dump(solicitudes_aprobadas)
     else:
-        objeto_solicitudMantenimientoAnalizada = session.query(SolicitudMantenimientoAprobada).filter(SolicitudMantenimientoAprobada.personaAsignada == cedula).all()
+        objeto_solicitudMantenimientoAnalizada = session.query(SolicitudMantenimiento,
+                                                               SolicitudMantenimientoAprobada).filter(
+            SolicitudMantenimiento.id == SolicitudMantenimientoAprobada.idSolicitud,
+            SolicitudMantenimiento.anno == SolicitudMantenimientoAprobada.annoSolicitud).filter(
+            SolicitudMantenimiento.estado == 'Aprobada').filter(
+            SolicitudMantenimientoAprobada.personaAsignada == cedula).all()
 
         for solicitud in objeto_solicitudMantenimientoAnalizada:
-            objeto_usuario = session.query(Usuario).get(solicitud.personaAsignada)
-            solicitud.nombrePersonaAsignada = (
-                        objeto_usuario.nombre + ' ' + objeto_usuario.apellido1 + ' ' + objeto_usuario.apellido2)
+            objeto_usuario = session.query(Usuario).get(solicitud.SolicitudMantenimientoAprobada.personaAsignada)
+            solicitud.SolicitudMantenimientoAprobada.nombrePersonaAsignada = (
+                    objeto_usuario.nombre + ' ' + objeto_usuario.apellido1 + ' ' + objeto_usuario.apellido2)
+            objeto_solicitud = session.query(SolicitudMantenimiento).get(
+                (solicitud.SolicitudMantenimientoAprobada.idSolicitud,
+                 solicitud.SolicitudMantenimientoAprobada.annoSolicitud))
+            solicitud.SolicitudMantenimientoAprobada.id = objeto_solicitud.id
+            solicitud.SolicitudMantenimientoAprobada.anno = objeto_solicitud.anno
+            solicitud.SolicitudMantenimientoAprobada.nombreSolicitante = objeto_solicitud.nombreSolicitante
+            solicitud.SolicitudMantenimientoAprobada.telefono = objeto_solicitud.telefono
+            solicitud.SolicitudMantenimientoAprobada.contactoAdicional = objeto_solicitud.contactoAdicional
+            solicitud.SolicitudMantenimientoAprobada.urgencia = objeto_solicitud.urgencia
+            solicitud.SolicitudMantenimientoAprobada.areaTrabajo = objeto_solicitud.areaTrabajo
+            solicitud.SolicitudMantenimientoAprobada.lugarTrabajo = objeto_solicitud.lugarTrabajo
+            solicitud.SolicitudMantenimientoAprobada.descripcionTrabajo = objeto_solicitud.descripcionTrabajo
+
+        solicitudes_aprobadas = []
+        for solicitud in objeto_solicitudMantenimientoAnalizada:
+            solicitudes_aprobadas.append(solicitud.SolicitudMantenimientoAprobada)
 
         schema = SolicitudMantenimientoAprobadaSchema(many=True)
 
-        solicitudAnalizada = schema.dump(objeto_solicitudMantenimientoAnalizada)
+        solicitudAnalizada = schema.dump(solicitudes_aprobadas)
 
     session.close()
 
     return jsonify(solicitudAnalizada)
 
+
 @bp_solicitudMantenimiento.route('/solicitudMantenimiento/aprobar', methods=['POST'])
-#@jwt_required
+@jwt_required
 def aprobar_solicitud():
     session = Session()
 
-    objeto_solicitudMantenimiento = session.query(SolicitudMantenimiento).get((request.json['id'], request.json['anno']))
+    objeto_solicitudMantenimiento = session.query(SolicitudMantenimiento).get(
+        (request.json['id'], request.json['anno']))
 
     if objeto_solicitudMantenimiento is None:
         return "Solicitud no encontrada", 404
@@ -139,9 +217,11 @@ def aprobar_solicitud():
     session.add(objeto_solicitudMantenimiento)
 
     if (request.json['estado'] == 'Aprobada'):
-        nueva_solicitudAprobada = SolicitudMantenimientoAprobada(request.json['id'],request.json['anno'], request.json['fechaAprobacion'],
-                                                                 request.json['personaAsignada'], request.json['observacionesAprob'],'','','','',
-                                                                 '','','')
+        nueva_solicitudAprobada = SolicitudMantenimientoAprobada(request.json['id'], request.json['anno'],
+                                                                 request.json['fechaAprobacion'],
+                                                                 request.json['personaAsignada'],
+                                                                 request.json['observacionesAprob'], '', '', '', '',
+                                                                 '', '', '')
         session.add(nueva_solicitudAprobada)
 
         session.commit()
@@ -151,7 +231,8 @@ def aprobar_solicitud():
 
         return jsonify(nuevo_solicitudMantenimientoAprobada)
     else:
-        nueva_solicitudRechazada = SolicitudMantenimientoRechazada(request.json['id'],request.json['anno'], request.json['motivoRechazo'])
+        nueva_solicitudRechazada = SolicitudMantenimientoRechazada(request.json['id'], request.json['anno'],
+                                                                   request.json['motivoRechazo'])
         session.add(nueva_solicitudRechazada)
 
         session.commit()
@@ -161,8 +242,9 @@ def aprobar_solicitud():
 
         return jsonify(nuevo_solicitudMantenimientoRechazada)
 
+
 @bp_solicitudMantenimiento.route('/solicitudMantenimiento/analizar', methods=['POST'])
-#@jwt_required
+@jwt_required
 def analizar_solicitud():
     session = Session()
 
@@ -176,25 +258,28 @@ def analizar_solicitud():
 
     session.add(objeto_solicitudMantenimiento)
 
-    objeto_solicitudMantenimientoAnalizada = session.query(SolicitudMantenimientoAprobada).get((request.json['id'], request.json['anno']))
+    objeto_solicitudMantenimientoAnalizada = session.query(SolicitudMantenimientoAprobada).get(
+        (request.json['id'], request.json['anno']))
 
     objeto_solicitudMantenimientoAnalizada.insumos = request.json['insumos']
     objeto_solicitudMantenimientoAnalizada.costoEstimado = request.json['costoEstimado']
     objeto_solicitudMantenimientoAnalizada.observacionesAnalisis = request.json['observacionesAnalisis']
-    objeto_solicitudMantenimientoAnalizada.ubicacionArchivo = request.json['ubicacion']
+    objeto_solicitudMantenimientoAnalizada.ubicacionArchivo = request.json['ubicacionArchivo']
 
     session.add(objeto_solicitudMantenimientoAnalizada)
 
     session.commit()
 
-    solicitudMantenimientoAprobada_editada = SolicitudMantenimientoAprobadaSchema().dump(objeto_solicitudMantenimientoAnalizada)
+    solicitudMantenimientoAprobada_editada = SolicitudMantenimientoAprobadaSchema().dump(
+        objeto_solicitudMantenimientoAnalizada)
 
     session.close()
 
     return jsonify(solicitudMantenimientoAprobada_editada)
 
+
 @bp_solicitudMantenimiento.route('/solicitudMantenimiento/finalizar', methods=['POST'])
-#@jwt_required
+@jwt_required
 def finalizar_solicitud():
     session = Session()
 
@@ -204,7 +289,7 @@ def finalizar_solicitud():
     if objeto_solicitudMantenimiento is None:
         return "Solicitud no encontrada", 404
 
-    objeto_solicitudMantenimiento.estado = request.json['estado']
+    objeto_solicitudMantenimiento.estado = 'Finalizada'
 
     session.add(objeto_solicitudMantenimiento)
 
@@ -226,20 +311,51 @@ def finalizar_solicitud():
     return jsonify(solicitudMantenimientoAprobada_editada)
 
 @bp_solicitudMantenimiento.route('/solicitudMantenimiento/id', methods=['GET'])
-#@jwt_required
+@jwt_required
 def consultar_solicitudMantenimiento_id():
     id = request.args.get('id')
     anno = request.args.get('anno')
     session = Session()
-    objeto_solicitudMantenimiento = session.query(SolicitudMantenimiento).get((id,anno))
+    objeto_solicitudMantenimiento = session.query(SolicitudMantenimiento).get((id, anno))
+    if (objeto_solicitudMantenimiento.estado == 'Pendiente'):
+        schema = SolicitudMantenimientoSchema()
+        solicitudMantenimiento = schema.dump(objeto_solicitudMantenimiento)
 
-    schema = SolicitudMantenimientoSchema()
-    solicitudMantenimiento = schema.dump(objeto_solicitudMantenimiento)
-    session.close()
-    return jsonify(solicitudMantenimiento)
+        session.close()
+        return jsonify(solicitudMantenimiento)
+    elif (objeto_solicitudMantenimiento.estado == 'Aprobada' or objeto_solicitudMantenimiento.estado == 'Analizada' or objeto_solicitudMantenimiento.estado == 'Finalizada'):
+        objeto_solicitudMantenimientoAprobada = session.query(SolicitudMantenimientoAprobada).get((objeto_solicitudMantenimiento.id, objeto_solicitudMantenimiento.anno))
+        schema = SolicitudMantenimientoAprobadaSchema()
+        solicitudMantenimientoAprobada = schema.dump(objeto_solicitudMantenimientoAprobada)
+        solicitudMantenimientoAprobada['id'] = objeto_solicitudMantenimiento.id
+        solicitudMantenimientoAprobada['anno'] = objeto_solicitudMantenimiento.anno
+        solicitudMantenimientoAprobada['nombreSolicitante'] = objeto_solicitudMantenimiento.nombreSolicitante
+        solicitudMantenimientoAprobada['telefono'] = objeto_solicitudMantenimiento.telefono
+        solicitudMantenimientoAprobada['contactoAdicional'] = objeto_solicitudMantenimiento.contactoAdicional
+        solicitudMantenimientoAprobada['urgencia'] = objeto_solicitudMantenimiento.urgencia
+        solicitudMantenimientoAprobada['areaTrabajo'] = objeto_solicitudMantenimiento.areaTrabajo
+        solicitudMantenimientoAprobada['lugarTrabajo'] = objeto_solicitudMantenimiento.lugarTrabajo
+        solicitudMantenimientoAprobada['descripcionTrabajo'] = objeto_solicitudMantenimiento.descripcionTrabajo
+        solicitudMantenimientoAprobada['estado'] = objeto_solicitudMantenimiento.estado
+
+        if solicitudMantenimientoAprobada['personaAsignada'] != "":
+            usuario = session.query(Usuario).get(solicitudMantenimientoAprobada['personaAsignada'])
+            solicitudMantenimientoAprobada['nombrePersonaAsignada'] = usuario.nombre + ' ' + usuario.apellido1 + ' ' + usuario.apellido2
+
+        session.close()
+        return jsonify(solicitudMantenimientoAprobada)
+
+    else:
+        objeto_solicitud_mantenimiento_rechazada = session.query(SolicitudMantenimientoRechazada).get((objeto_solicitudMantenimiento.id, objeto_solicitudMantenimiento.anno))
+        schema = SolicitudMantenimientoSchema()
+        solicitudMantenimiento = schema.dump(objeto_solicitudMantenimiento)
+        solicitudMantenimiento['motivoRechazo'] = objeto_solicitud_mantenimiento_rechazada.motivo
+        session.close()
+        return jsonify(solicitudMantenimiento)
+
 
 @bp_solicitudMantenimiento.route('/solicitudMantenimiento', methods=['POST'])
-#@jwt_required
+@jwt_required
 def agregar_solicitudMantenimiento():
     session = Session()
     datos_solicitud = request.get_json()
@@ -250,10 +366,13 @@ def agregar_solicitudMantenimiento():
     else:
         id = 1
 
-    solicitudMantenimiento = SolicitudMantenimiento(id, datos_solicitud['anno'], datos_solicitud['nombreSolicitante'], datos_solicitud['telefono'],
-                                                    datos_solicitud['contactoAdicional'], datos_solicitud['urgencia'], datos_solicitud['areaTrabajo'],
-                                                    datos_solicitud['lugarTrabajo'], datos_solicitud['descripcionTrabajo'], datos_solicitud['estado'],
-                                                    datos_solicitud['cedulaUsuario'])
+    solicitudMantenimiento = SolicitudMantenimiento(id, datos_solicitud['anno'], datos_solicitud['nombreSolicitante'],
+                                                    datos_solicitud['telefono'],
+                                                    datos_solicitud['contactoAdicional'], datos_solicitud['urgencia'],
+                                                    datos_solicitud['areaTrabajo'],
+                                                    datos_solicitud['lugarTrabajo'],
+                                                    datos_solicitud['descripcionTrabajo'], datos_solicitud['estado'],
+                                                    datos_solicitud['usuario'])
 
     session.add(solicitudMantenimiento)
     session.commit()
@@ -263,17 +382,20 @@ def agregar_solicitudMantenimiento():
     session.close()
     return jsonify(nuevo_solicitudMantenimiento), 201
 
+
 @bp_solicitudMantenimiento.route('/solicitudMantenimiento/editar', methods=['POST'])
-#@jwt_required
+@jwt_required
 def editar_solicitudMantenimiento():
-    posted_solicitudMantenimiento = SolicitudMantenimientoSchema(only=('id', 'anno','nombreSolicitante','telefono','contactoAdicional','urgencia',
-                                                                       'areaTrabajo','lugarTrabajo','descripcionTrabajo','estado'))\
+    posted_solicitudMantenimiento = SolicitudMantenimientoSchema(
+        only=('id', 'anno', 'nombreSolicitante', 'telefono', 'contactoAdicional', 'urgencia',
+              'areaTrabajo', 'lugarTrabajo', 'descripcionTrabajo', 'estado')) \
         .load(request.get_json())
 
     solicitudMantenimiento_actualizado = SolicitudMantenimiento(**posted_solicitudMantenimiento)
 
     session = Session()
-    objeto_solicitudMantenimiento = session.query(SolicitudMantenimiento).get((solicitudMantenimiento_actualizado.id, solicitudMantenimiento_actualizado.anno))
+    objeto_solicitudMantenimiento = session.query(SolicitudMantenimiento).get(
+        (solicitudMantenimiento_actualizado.id, solicitudMantenimiento_actualizado.anno))
     if objeto_solicitudMantenimiento is None:
         return "Solicitud no encontrada", 404
 
@@ -295,14 +417,15 @@ def editar_solicitudMantenimiento():
 
     return jsonify(solicitudMantenimiento)
 
+
 @bp_solicitudMantenimiento.route('/solicitudMantenimiento', methods=['DELETE'])
-#@jwt_required
+@jwt_required
 def eliminar_solicitudMantenimiento():
     id = request.args.get('id')
     anno = request.args.get('anno')
 
     session = Session()
-    objeto_solicitudMantenimiento = session.query(SolicitudMantenimiento).get((id,anno))
+    objeto_solicitudMantenimiento = session.query(SolicitudMantenimiento).get((id, anno))
     if objeto_solicitudMantenimiento is None:
         return "Solicitud no encontrado", 404
 
