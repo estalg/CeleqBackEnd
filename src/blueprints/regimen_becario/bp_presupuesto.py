@@ -1,11 +1,13 @@
 from flask import Blueprint, jsonify, request
+from flask_jwt_extended import jwt_required
+
 from src.entities.entity import Session
 from ...entities.regimen_becario.presupuesto import Presupuesto, PresupuestoSchema
 
 bp_presupuesto = Blueprint('bp_presupuesto', __name__)
 
 @bp_presupuesto.route('/presupuesto')
-#@jwt_required
+@jwt_required
 def consultar_Presupuesto():
     session = Session()
     objeto_presupuesto = session.query(Presupuesto).all()
@@ -17,7 +19,7 @@ def consultar_Presupuesto():
     return jsonify(presupuesto)
 
 @bp_presupuesto.route('/presupuesto/id', methods=['GET'])
-#@jwt_required
+@jwt_required
 def consultar_presupuesto_id():
     codigo = request.args.get('codigo')
     session = Session()
@@ -29,7 +31,7 @@ def consultar_presupuesto_id():
     return jsonify(presupuesto)
 
 @bp_presupuesto.route('/presupuesto', methods=['POST'])
-#@jwt_required
+@jwt_required
 def agregar_presupuesto():
     # mount exam object
     posted_presupuesto = PresupuestoSchema(only=('codigo', 'nombre'))\
@@ -48,7 +50,7 @@ def agregar_presupuesto():
     return jsonify(nuevo_presupuesto), 201
 
 @bp_presupuesto.route('/presupuesto/editar', methods=['POST'])
-#@jwt_required
+@jwt_required
 def editar_presupuesto():
     posted_presupuesto = PresupuestoSchema(only=('codigo', 'nombre'))\
         .load(request.get_json())
@@ -72,7 +74,7 @@ def editar_presupuesto():
     return jsonify(presupuesto)
 
 @bp_presupuesto.route('/presupuesto', methods=['DELETE'])
-#@jwt_required
+@jwt_required
 def eliminar_presupuesto():
     codigo = request.args.get('codigo')
     session = Session()
