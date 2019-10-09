@@ -77,7 +77,7 @@ def consultar_designacion_id():
 
 
 @bp_designaciones.route('/designacion', methods=['POST'])
-#@jwt_required
+@jwt_required
 def agregar_designacion():
     datos_designacion = request.get_json()
 
@@ -137,3 +137,52 @@ def agregar_designacion():
     session.close()
 
     return jsonify(objeto_designacion)
+
+@bp_designaciones.route('/estudiantes', methods=['POST'])
+@jwt_required
+def consultar_estudiantes():
+    session = Session()
+    objeto_Estudiante = session.query(Estudiante).all()
+
+    schema = EstudianteSchema(many=True)
+    estudiantes = schema.dump(objeto_Estudiante)
+
+    session.close()
+    return jsonify(estudiantes)
+
+@bp_designaciones.route('/designacion/editar', methods=['POST'])
+#@jwt_required
+def editar_designacion():
+    datos_designacion = request.get_json()
+
+    session = Session()
+    objeto_designacion = session.query(Designacion).get((datos_designacion['id'], datos_designacion['anno']))
+    if objeto_designacion is None:
+        return "Designación no encontrada", 404
+
+    schema = DesignacionSchema()
+
+    objeto_designacion.responsable = datos_designacion['responsable']
+    objeto_designacion.unidad = datos_designacion['unidad']
+    objeto_designacion.horas = datos_designacion['horas']
+    objeto_designacion.observaciones = datos_designacion['observaciones']
+    objeto_designacion.tramitado = datos_designacion['tramitado']
+    objeto_designacion.fechaFinal = datos_designacion['fechaFinal']
+
+    session.add(objeto_designacion)
+
+    designacion = schema.dump(objeto_designacion)
+
+    p9 = session.query(P9).get(datos_designacion['numero'])
+
+    if p9 is None:
+        objeto_p9 = P9(datos_designacion['numero'], datos_designacion['ubicacionArchivo'], datos_designacion['id'], datos_designacion['anno'],
+                       datos_designacion['fecha'])
+
+    session.add(objeto_p9)
+
+    session.commit()
+
+    session.close()
+
+    return jsonify(designacion)
