@@ -151,7 +151,7 @@ def consultar_estudiantes():
     return jsonify(estudiantes)
 
 @bp_designaciones.route('/designacion/editar', methods=['POST'])
-#@jwt_required
+@jwt_required
 def editar_designacion():
     datos_designacion = request.get_json()
 
