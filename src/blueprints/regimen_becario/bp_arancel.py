@@ -1,11 +1,13 @@
 from flask import Blueprint, jsonify, request
+from flask_jwt_extended import jwt_required
+
 from src.entities.entity import Session
 from ...entities.regimen_becario.arancel import Arancel, ArancelSchema
 
 bp_arancel = Blueprint('bp_arancel', __name__)
 
 @bp_arancel.route('/arancel')
-#@jwt_required
+@jwt_required
 def consultar_Arancel():
     session = Session()
     objeto_arancel = session.query(Arancel).all()
@@ -17,7 +19,7 @@ def consultar_Arancel():
     return jsonify(arancel)
 
 @bp_arancel.route('/arancel/id', methods=['GET'])
-#@jwt_required
+@jwt_required
 def consultar_arancel_id():
     tipo = request.args.get('tipo')
     session = Session()
@@ -29,7 +31,7 @@ def consultar_arancel_id():
     return jsonify(arancel)
 
 @bp_arancel.route('/arancel', methods=['POST'])
-#@jwt_required
+@jwt_required
 def agregar_arancel():
     # mount exam object
     posted_arancel = ArancelSchema(only=('tipo', 'monto'))\
@@ -48,7 +50,7 @@ def agregar_arancel():
     return jsonify(nuevo_arancel), 201
 
 @bp_arancel.route('/arancel/editar', methods=['POST'])
-#@jwt_required
+@jwt_required
 def editar_arancel():
     posted_arancel = ArancelSchema(only=('tipo', 'monto'))\
         .load(request.get_json())
@@ -72,7 +74,7 @@ def editar_arancel():
     return jsonify(arancel)
 
 @bp_arancel.route('/arancel', methods=['DELETE'])
-#@jwt_required
+@jwt_required
 def eliminar_arancel():
     tipo = request.args.get('tipo')
     session = Session()
