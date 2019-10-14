@@ -6,9 +6,12 @@ from ..entities.entity import Session
 from ..entities.usuario import Usuario, UsuarioSchema
 from ..entities.usuariosgrupos import UsuariosGrupos
 from ..entities.grupospermisos import GruposPermisos
+from ..cache import cache
 import hashlib
+import uuid
 
 bp_autenticacion = Blueprint('bp_autenticacion', __name__)
+
 
 @bp_autenticacion.route('/login', methods=['POST'])
 def login():
@@ -47,9 +50,26 @@ def login():
 
     return jsonify({'jwt': access_token, 'refreshToken': refresh_token}), 200
 
+
 @bp_autenticacion.route('/login/refresh')
 @jwt_refresh_token_required
 def refresh_token():
     current_user = get_jwt_identity()
     access_token = create_access_token(identity=current_user)
     return {'access_token': access_token}, 200
+
+
+@bp_autenticacion.route('/generatePassChangeId', methods=['POST'])
+def generate_password_change_id():
+    try:
+        correo = request.data.decode(request.charset)
+
+        id = uuid.uuid1()
+        id = id.hex
+
+        print(id)
+        cache.set('pcid-' + correo, id)
+        return '', 200
+    except Exception as e:
+        print(e)
+        return 'Error al crear identificador de cambio de contraseña', 400
