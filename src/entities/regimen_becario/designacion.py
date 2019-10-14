@@ -69,6 +69,7 @@ class DesignacionSchema(Schema):
     nombre = fields.Str()
     apellido1 = fields.Str()
     apellido2 = fields.Str()
+    carrera = fields.Str()
     responsable = fields.Str()
     numero = fields.Str()
     ubicacionArchivo = fields.Str()

@@ -27,6 +27,7 @@ def consultar_designaciones():
         designacion['nombre'] = estudiante.nombre
         designacion['apellido'] = estudiante.apellido1
         designacion['apellido2'] = estudiante.apellido2
+        designacion['carrera'] = estudiante.carrera
         designacion['responsable'] = (responsable.nombre + ' ' + responsable.apellido1 + ' ' + responsable.apellido2)
 
     session.close()
@@ -125,7 +126,7 @@ def agregar_designacion():
                               datos_designacion['adHonorem'])
     session.add(designacion)
 
-    p9 = P9(datos_designacion['numero'], datos_designacion['ubicacionArchivo'], datos_designacion['id'], datos_designacion['anno'], datos_designacion['fecha'])
+    p9 = P9(datos_designacion['numero'], datos_designacion['ubicacionArchivo'], id, datos_designacion['anno'], datos_designacion['fecha'])
 
     session.add(p9)
 
@@ -138,7 +139,7 @@ def agregar_designacion():
 
     return jsonify(objeto_designacion)
 
-@bp_designaciones.route('/estudiantes', methods=['POST'])
+@bp_designaciones.route('/estudiantes', methods=['GET'])
 @jwt_required
 def consultar_estudiantes():
     session = Session()
@@ -172,14 +173,13 @@ def editar_designacion():
     session.add(objeto_designacion)
 
     designacion = schema.dump(objeto_designacion)
-
-    p9 = session.query(P9).get(datos_designacion['numero'])
+    with session.no_autoflush:
+        p9 = session.query(P9).get(datos_designacion['numero'])
 
     if p9 is None:
         objeto_p9 = P9(datos_designacion['numero'], datos_designacion['ubicacionArchivo'], datos_designacion['id'], datos_designacion['anno'],
                        datos_designacion['fecha'])
-
-    session.add(objeto_p9)
+        session.add(objeto_p9)
 
     session.commit()
 
