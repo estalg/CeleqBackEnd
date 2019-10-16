@@ -1,6 +1,6 @@
 import os
 
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, send_file
 from flask_jwt_extended import jwt_required
 from werkzeug.utils import secure_filename
 from pathlib import Path
@@ -51,3 +51,18 @@ def uploadFile(allowed_files, folder):
         return jsonify(response), 200
     else:
         return 'Tipo de archivo no permitido', 400
+
+
+@bp_files.route('/downloadDocument', methods=['GET'])
+@jwt_required
+def downloadDocument():
+    location = request.args.get('url')
+    location = Path().cwd() / location
+    filename = os.path.basename(location)
+    file = open(location, 'rb')
+
+    return send_file(
+        file,
+        mimetype='blob',
+        as_attachment=True,
+        attachment_filename=filename)
