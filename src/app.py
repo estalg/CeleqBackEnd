@@ -1,7 +1,6 @@
 from flask import Flask
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
-from flask_caching import Cache
 
 from src.entities.entity import engine, Base
 from .cache import cache
@@ -17,6 +16,7 @@ from .blueprints.regimen_becario.bp_presupuesto import bp_presupuesto
 from .blueprints.umi.bp_solicitudMantenimiento import bp_solicitudMantenimiento
 from .blueprints.regimen_becario.bp_designacion import bp_designaciones
 from .blueprints.bp_mail import bp_mail
+from src.scheduler import scheduler
 
 # creating the Flask application
 app = Flask(__name__)
@@ -33,6 +33,8 @@ app.config.from_mapping(config)
 jwt = JWTManager(app)
 
 cache.init_app(app)
+
+scheduler.start()
 
 # if needed, generate database schema
 Base.metadata.create_all(engine)
@@ -51,4 +53,4 @@ app.register_blueprint(bp_designaciones)
 app.register_blueprint(bp_mail)
 
 if __name__ == '__main__':
-    app.run()
+    app.run(use_reloader=False)

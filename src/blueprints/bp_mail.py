@@ -9,11 +9,13 @@ bp_mail = Blueprint('bp_mail', __name__)
 
 
 @bp_mail.route('/mail', methods=['POST'])
-# @jwt_required
-def enviar_correo():
+@jwt_required
+def enviar_correo_frontend():
     mensaje = request.get_json()
-    context = ssl.SSLContext(ssl.PROTOCOL_TLS)
+    enviarCorreo(mensaje)
 
+def enviarCorreo(mensaje):
+    context = ssl.SSLContext(ssl.PROTOCOL_TLS)
     with smtplib.SMTP("smtp.ucr.ac.cr", 25) as server:
         server.ehlo()
         server.starttls(context=context)
@@ -26,7 +28,7 @@ def enviar_correo():
         message["To"] = mensaje['destinatario']
         text = mensaje['texto']
 
-        message.attach(MIMEText(text, "plain"))
+        message.attach(MIMEText(text, "html"))
 
         server.sendmail(
             "compras.celeq@ucr.ac.cr",

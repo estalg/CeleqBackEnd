@@ -31,6 +31,17 @@ def consultar_usuario_id():
     session.close()
     return jsonify(usuario)
 
+@bp_usuario.route('/usuarios/correo', methods=['GET'])
+def consultar_usuario_correo():
+    correo = request.args.get('correo')
+    session = Session()
+    objeto_usuario = session.query(Usuario).filter_by(correo=correo).first()
+
+    schema = UsuarioSchema()
+    usuario = schema.dump(objeto_usuario)
+    session.close()
+    return jsonify(usuario)
+
 @bp_usuario.route('/usuarios', methods=['POST'])
 @jwt_required
 def agregar_usuario():
@@ -51,7 +62,7 @@ def agregar_usuario():
     return jsonify(nuevo_usuario), 201
 
 @bp_usuario.route('/usuarios/editar', methods=['POST'])
-@jwt_required
+#@jwt_required
 def editar_usuario():
     posted_usuario = UsuarioSchema(only=('cedula', 'correo', 'telefono', 'nombre', 'apellido1', 'apellido2', 'contrasenna'))\
         .load(request.get_json())
