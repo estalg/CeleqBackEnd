@@ -15,6 +15,7 @@ from .blueprints.regimen_becario.bp_arancel import bp_arancel
 from .blueprints.regimen_becario.bp_presupuesto import bp_presupuesto
 from .blueprints.umi.bp_solicitudMantenimiento import bp_solicitudMantenimiento
 from .blueprints.regimen_becario.bp_designacion import bp_designaciones
+from .blueprints.bp_grupos import bp_grupos
 from .blueprints.bp_mail import bp_mail
 from src.scheduler import scheduler
 
@@ -51,6 +52,7 @@ app.register_blueprint(bp_solicitudes_regencia)
 app.register_blueprint(bp_unidad)
 app.register_blueprint(bp_designaciones)
 app.register_blueprint(bp_mail)
+app.register_blueprint(bp_grupos)
 
 if __name__ == '__main__':
     app.run(use_reloader=False)
