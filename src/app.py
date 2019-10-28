@@ -18,6 +18,9 @@ from .blueprints.regimen_becario.bp_designacion import bp_designaciones
 from .blueprints.bp_grupos import bp_grupos
 from .blueprints.bp_mail import bp_mail
 from src.scheduler import scheduler
+from .blueprints.regencia.bp_reporte_cristaleria import bp_reporte_cristaleria
+from .blueprints.regencia.bp_reporte_reactivo import bp_reporte_reactivo
+from .blueprints.regimen_becario.bp_reporte_designaciones import bp_reporte_designaciones
 
 # creating the Flask application
 app = Flask(__name__)
@@ -53,6 +56,9 @@ app.register_blueprint(bp_unidad)
 app.register_blueprint(bp_designaciones)
 app.register_blueprint(bp_mail)
 app.register_blueprint(bp_grupos)
+app.register_blueprint(bp_reporte_cristaleria)
+app.register_blueprint(bp_reporte_reactivo)
+app.register_blueprint(bp_reporte_designaciones)
 
 if __name__ == '__main__':
     app.run(use_reloader=False)
