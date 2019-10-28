@@ -15,6 +15,9 @@ from .blueprints.regencia.bp_solicitudes_regencia import bp_solicitudes_regencia
 from .blueprints.bp_unidad import bp_unidad
 from .blueprints.regimen_becario.bp_designacion import bp_designaciones
 from .blueprints.bp_mail import bp_mail
+from .blueprints.regencia.bp_reporte_cristaleria import bp_reporte_cristaleria
+from .blueprints.regencia.bp_reporte_reactivo import bp_reporte_reactivo
+from .blueprints.regimen_becario.bp_reporte_designaciones import bp_reporte_designaciones
 
 # creating the Flask application
 app = Flask(__name__)
@@ -38,6 +41,9 @@ app.register_blueprint(bp_solicitudes_regencia)
 app.register_blueprint(bp_unidad)
 app.register_blueprint(bp_designaciones)
 app.register_blueprint(bp_mail)
+app.register_blueprint(bp_reporte_cristaleria)
+app.register_blueprint(bp_reporte_reactivo)
+app.register_blueprint(bp_reporte_designaciones)
 
 if __name__ == '__main__':
     app.run()

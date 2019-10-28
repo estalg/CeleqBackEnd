@@ -22,6 +22,6 @@ class P9(Base):
 class P9Schema(Schema):
     numero = fields.Str()
     ubicacionArchivo = fields.Str()
-    idDesignacion = fields.Str()
-    annoDesignacion = fields.Str()
+    idDesignacion = fields.Int()
+    annoDesignacion = fields.Int()
     fecha = fields.Str()
