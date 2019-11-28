@@ -2,8 +2,8 @@ import datetime
 import atexit
 
 from apscheduler.schedulers.background import BackgroundScheduler
-from src.entities.entity import Session
-from src.entities.idcambiocontrasenna import IdCambioContrasenna
+from src.pb.entities.entity import Session
+from src.pb.entities.idcambiocontrasenna import IdCambioContrasenna
 
 
 scheduler = BackgroundScheduler()
