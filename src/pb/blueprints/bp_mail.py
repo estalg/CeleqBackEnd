@@ -20,18 +20,18 @@ def enviarCorreo(mensaje):
         server.ehlo()
         server.starttls(context=context)
         server.ehlo()
-        server.login("compras.celeq@ucr.ac.cr", "Compras.celeq19")
+        server.login("informatica.celeq@ucr.ac.cr", "UNINCE.220814")
 
         message = MIMEMultipart("alternative")
         message["Subject"] = mensaje['subject']
-        message["From"] = "compras.celeq@ucr.ac.cr"
+        message["From"] = "informatica.celeq@ucr.ac.cr"
         message["To"] = mensaje['destinatario']
         text = mensaje['texto']
 
         message.attach(MIMEText(text, "html"))
 
         server.sendmail(
-            "compras.celeq@ucr.ac.cr",
+            "informatica.celeq@ucr.ac.cr",
             mensaje['destinatario'],
             message.as_string())
         server.quit()
