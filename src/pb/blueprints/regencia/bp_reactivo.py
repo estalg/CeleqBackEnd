@@ -1,8 +1,8 @@
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required
 
-from src.pb.entities.regencia.reactivo import Reactivo, ReactivoSchema
-from src.pb.entities.entity import Session
+from pb.entities.regencia.reactivo import Reactivo, ReactivoSchema
+from pb.entities.entity import Session
 
 bp_reactivo = Blueprint('bp_reactivo', __name__)
 

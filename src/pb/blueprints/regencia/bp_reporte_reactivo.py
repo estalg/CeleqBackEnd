@@ -1,7 +1,7 @@
 from flask import Blueprint, make_response
 from fpdf import FPDF
-from src.pb.entities.regencia.reactivo import Reactivo, ReactivoSchema
-from src.pb.entities.entity import Session
+from pb.entities.regencia.reactivo import Reactivo, ReactivoSchema
+from pb.entities.entity import Session
 
 
 class CustomPDF(FPDF):

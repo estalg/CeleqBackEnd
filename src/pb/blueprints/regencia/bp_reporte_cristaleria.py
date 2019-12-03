@@ -1,7 +1,7 @@
 from flask import Blueprint, make_response
 from fpdf import FPDF
-from src.pb.entities.regencia.cristaleria import Cristaleria, CristaleriaSchema
-from src.pb.entities.entity import Session
+from pb.entities.regencia.cristaleria import Cristaleria, CristaleriaSchema
+from pb.entities.entity import Session
 from flask_jwt_extended import jwt_required
 
 

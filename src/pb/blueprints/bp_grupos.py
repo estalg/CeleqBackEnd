@@ -1,11 +1,11 @@
 from flask import Blueprint, jsonify, request
 
-from src.pb.entities.entity import Session
-from src.pb.entities.grupo import Grupo, GruposSchema
-from src.pb.entities.permisos import Permisos, PermisosSchema
-from src.pb.entities.grupospermisos import GruposPermisos, GruposPermisosSchema
-from src.pb.entities.usuariosgrupos import UsuariosGrupos
-from src.pb.entities.usuario import Usuario, UsuarioSchema
+from pb.entities.entity import Session
+from pb.entities.grupo import Grupo, GruposSchema
+from pb.entities.permisos import Permisos, PermisosSchema
+from pb.entities.grupospermisos import GruposPermisos, GruposPermisosSchema
+from pb.entities.usuariosgrupos import UsuariosGrupos
+from pb.entities.usuario import Usuario, UsuarioSchema
 from flask_jwt_extended import jwt_required
 
 bp_grupos = Blueprint('bp_grupos', __name__)

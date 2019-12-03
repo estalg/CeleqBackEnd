@@ -1,8 +1,8 @@
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required
 
-from src.pb.entities.entity import Session
-from src.pb.entities.regimen_becario.arancel import Arancel, ArancelSchema
+from pb.entities.entity import Session
+from pb.entities.regimen_becario.arancel import Arancel, ArancelSchema
 
 bp_arancel = Blueprint('bp_arancel', __name__)
 

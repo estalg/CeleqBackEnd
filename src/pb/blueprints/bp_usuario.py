@@ -1,8 +1,8 @@
 from flask import Blueprint, jsonify, request
 
-from src.pb.entities.usuariosgrupos import UsuariosGrupos
-from src.pb.entities.entity import Session
-from src.pb.entities.usuario import Usuario, UsuarioSchema
+from pb.entities.usuariosgrupos import UsuariosGrupos
+from pb.entities.entity import Session
+from pb.entities.usuario import Usuario, UsuarioSchema
 from flask_jwt_extended import jwt_required
 
 bp_usuario = Blueprint('bp_usuarios', __name__)

@@ -4,11 +4,11 @@ from flask import Blueprint, jsonify, request
 from flask_jwt_extended import create_access_token, create_refresh_token, jwt_refresh_token_required, \
     get_jwt_identity
 
-from src.pb.entities.entity import Session
-from src.pb.entities.usuario import Usuario, UsuarioSchema
-from src.pb.entities.usuariosgrupos import UsuariosGrupos
-from src.pb.entities.grupospermisos import GruposPermisos
-from src.pb.entities.idcambiocontrasenna import IdCambioContrasenna, IdCambioContrasennaSchema
+from pb.entities.entity import Session
+from pb.entities.usuario import Usuario, UsuarioSchema
+from pb.entities.usuariosgrupos import UsuariosGrupos
+from pb.entities.grupospermisos import GruposPermisos
+from pb.entities.idcambiocontrasenna import IdCambioContrasenna, IdCambioContrasennaSchema
 from ..blueprints.bp_mail import enviarCorreo
 import hashlib
 import uuid

@@ -2,12 +2,12 @@ from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required
 from sqlalchemy import func, desc
 
-from src.pb.entities.entity import Session
-from src.pb.entities.regimen_becario.designacion import Designacion, DesignacionSchema
-from src.pb.entities.umi.estudiante import Estudiante, EstudianteSchema
-from src.pb.entities.usuario import Usuario, UsuarioSchema
-from src.pb.entities.umi.p9 import P9, P9Schema
-from src.pb.entities.regimen_becario.arancel import Arancel, ArancelSchema
+from pb.entities.entity import Session
+from pb.entities.regimen_becario.designacion import Designacion, DesignacionSchema
+from pb.entities.umi.estudiante import Estudiante, EstudianteSchema
+from pb.entities.usuario import Usuario, UsuarioSchema
+from pb.entities.umi.p9 import P9, P9Schema
+from pb.entities.regimen_becario.arancel import Arancel, ArancelSchema
 
 bp_designaciones = Blueprint('bp_designaciones', __name__)
 
