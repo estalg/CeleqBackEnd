@@ -1,4 +1,5 @@
 from flask import Blueprint, make_response
+from flask_jwt_extended import jwt_required
 from fpdf import FPDF
 from pb.entities.regencia.reactivo import Reactivo, ReactivoSchema
 from pb.entities.entity import Session

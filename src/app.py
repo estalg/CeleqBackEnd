@@ -3,7 +3,7 @@ from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 
 from pb.entities.entity import engine, Base
-from .cache import cache
+from cache import cache
 from pb.blueprints.bp_autenticacion import bp_autenticacion
 from pb.blueprints.bp_files import bp_files
 from pb.blueprints.bp_unidad import bp_unidad
