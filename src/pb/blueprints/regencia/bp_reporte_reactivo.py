@@ -93,7 +93,7 @@ bp_reporte_reactivo = Blueprint('bp_reporte_reactivo', __name__)
 
 
 @bp_reporte_reactivo.route('/reactivo/reporte', methods=['GET'])
-#@jwt_required
+@jwt_required
 def create_pdf():
     pdf = CustomPDF()
     pdf.alias_nb_pages()
