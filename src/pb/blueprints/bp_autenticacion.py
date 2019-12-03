@@ -84,7 +84,7 @@ def generate_password_change_id():
 
         session.add(entidadId)
 
-        urlFrontend = 'http://127.0.0.1:4200/cambioContrasenna/' + id + '/' + correo
+        urlFrontend = 'http://10.90.85.68/cambioContrasenna/' + id + '/' + correo
         mail = {
             'texto': 'Si usted ha solicitado un cambio de contraseña, por favor haga click <a href="' + urlFrontend + '">aquí</a>',
             'subject': 'Solicitud de cambio de contraseña de la plataforma del CELEQ',
