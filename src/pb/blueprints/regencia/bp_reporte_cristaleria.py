@@ -103,6 +103,6 @@ def create_pdf():
     pdf.Table()
 
     response = make_response(pdf.output(dest='S').encode('latin-1'))
-    response.headers.set('Content-Disposition', 'attachment', filename='ejemplo.pdf')
+    response.headers.set('Content-Disposition', 'attachment', filename='reporte_cristaleria.pdf')
     response.headers.set('Content-Type', 'application/pdf')
     return response
