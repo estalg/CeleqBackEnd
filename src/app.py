@@ -2,25 +2,25 @@ from flask import Flask
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 
-from pb.entities.entity import engine, Base
-from cache import cache
-from pb.blueprints.bp_autenticacion import bp_autenticacion
-from pb.blueprints.bp_files import bp_files
-from pb.blueprints.bp_unidad import bp_unidad
-from pb.blueprints.bp_usuario import bp_usuario
-from pb.blueprints.regencia.bp_cristaleria import bp_cristaleria
-from pb.blueprints.regencia.bp_reactivo import bp_reactivo
-from pb.blueprints.regencia.bp_solicitudes_regencia import bp_solicitudes_regencia
-from pb.blueprints.regimen_becario.bp_arancel import bp_arancel
-from pb.blueprints.regimen_becario.bp_presupuesto import bp_presupuesto
-from pb.blueprints.umi.bp_solicitudMantenimiento import bp_solicitudMantenimiento
-from pb.blueprints.regimen_becario.bp_designacion import bp_designaciones
-from pb.blueprints.bp_grupos import bp_grupos
-from pb.blueprints.bp_mail import bp_mail
-from scheduler import scheduler
-from pb.blueprints.regencia.bp_reporte_cristaleria import bp_reporte_cristaleria
-from pb.blueprints.regencia.bp_reporte_reactivo import bp_reporte_reactivo
-from pb.blueprints.regimen_becario.bp_reporte_designaciones import bp_reporte_designaciones
+from .pb.entities.entity import engine, Base
+from .cache import cache
+from .pb.blueprints.bp_autenticacion import bp_autenticacion
+from .pb.blueprints.bp_files import bp_files
+from .pb.blueprints.bp_unidad import bp_unidad
+from .pb.blueprints.bp_usuario import bp_usuario
+from .pb.blueprints.regencia.bp_cristaleria import bp_cristaleria
+from .pb.blueprints.regencia.bp_reactivo import bp_reactivo
+from .pb.blueprints.regencia.bp_solicitudes_regencia import bp_solicitudes_regencia
+from .pb.blueprints.regimen_becario.bp_arancel import bp_arancel
+from .pb.blueprints.regimen_becario.bp_presupuesto import bp_presupuesto
+from .pb.blueprints.umi.bp_solicitudMantenimiento import bp_solicitudMantenimiento
+from .pb.blueprints.regimen_becario.bp_designacion import bp_designaciones
+from .pb.blueprints.bp_grupos import bp_grupos
+from .pb.blueprints.bp_mail import bp_mail
+from .scheduler import scheduler
+from .pb.blueprints.regencia.bp_reporte_cristaleria import bp_reporte_cristaleria
+from .pb.blueprints.regencia.bp_reporte_reactivo import bp_reporte_reactivo
+from .pb.blueprints.regimen_becario.bp_reporte_designaciones import bp_reporte_designaciones
 
 # creating the Flask application
 app = Flask(__name__)
