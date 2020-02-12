@@ -1,8 +1,8 @@
 from flask import Blueprint, make_response
 from flask_jwt_extended import jwt_required
 from fpdf import FPDF
-from pb.entities.regencia.reactivo import Reactivo, ReactivoSchema
-from pb.entities.entity import Session
+from ...entities.regencia.reactivo import Reactivo, ReactivoSchema
+from ...entities.entity import Session
 
 
 class CustomPDF(FPDF):
@@ -94,7 +94,7 @@ bp_reporte_reactivo = Blueprint('bp_reporte_reactivo', __name__)
 
 
 @bp_reporte_reactivo.route('/reactivo/reporte', methods=['GET'])
-@jwt_required
+#@jwt_required
 def create_pdf():
     pdf = CustomPDF()
     pdf.alias_nb_pages()

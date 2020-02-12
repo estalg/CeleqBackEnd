@@ -2,12 +2,12 @@ from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required
 from sqlalchemy import func
 
-from pb.entities.entity import Session
-from pb.entities.umi.solicitudMantenimiento import SolicitudMantenimiento, SolicitudMantenimientoAprobada, \
+from ...entities.entity import Session
+from ...entities.umi.solicitudMantenimiento import SolicitudMantenimiento, SolicitudMantenimientoAprobada, \
     SolicitudMantenimientoRechazada, \
     SolicitudMantenimientoSchema, SolicitudMantenimientoAprobadaSchema, SolicitudMantenimientoRechazadaSchema
-from pb.entities.usuario import Usuario
-from pb.entities.usuariosgrupos import UsuariosGrupos
+from ...entities.usuario import Usuario
+from ...entities.usuariosgrupos import UsuariosGrupos
 
 bp_solicitudMantenimiento = Blueprint('bp_solicitudMantenimiento', __name__)
 

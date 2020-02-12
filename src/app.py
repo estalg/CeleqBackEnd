@@ -21,6 +21,13 @@ from .scheduler import scheduler
 from .pb.blueprints.regencia.bp_reporte_cristaleria import bp_reporte_cristaleria
 from .pb.blueprints.regencia.bp_reporte_reactivo import bp_reporte_reactivo
 from .pb.blueprints.regimen_becario.bp_reporte_designaciones import bp_reporte_designaciones
+from .pb.blueprints.vinculo_externo.bp_feriados import bp_feriados
+from .pb.blueprints.vinculo_externo.bp_precioGiras import bp_precioGiras
+from .pb.blueprints.vinculo_externo.bp_localizaciones import bp_localizaciones
+from .pb.blueprints.vinculo_externo.bp_analisisCotizacion import bp_analisis
+from .pb.blueprints.vinculo_externo.bp_clienteCotizacion import bp_clienteCotizacion
+from .pb.blueprints.vinculo_externo.bp_cotizacion import bp_cotizacion
+from .pb.blueprints.vinculo_externo.bp_giras import bp_giras
 
 # creating the Flask application
 app = Flask(__name__)
@@ -59,6 +66,13 @@ app.register_blueprint(bp_grupos)
 app.register_blueprint(bp_reporte_cristaleria)
 app.register_blueprint(bp_reporte_reactivo)
 app.register_blueprint(bp_reporte_designaciones)
+app.register_blueprint(bp_feriados)
+app.register_blueprint(bp_precioGiras)
+app.register_blueprint(bp_localizaciones)
+app.register_blueprint(bp_analisis)
+app.register_blueprint(bp_clienteCotizacion)
+app.register_blueprint(bp_cotizacion)
+app.register_blueprint(bp_giras)
 
 if __name__ == '__main__':
     app.run(use_reloader=False)

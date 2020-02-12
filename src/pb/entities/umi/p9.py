@@ -1,5 +1,5 @@
 from sqlalchemy import Column, String, Integer, Date
-from pb.entities.entity import Base
+from ...entities.entity import Base
 from marshmallow import Schema, fields
 
 class P9(Base):

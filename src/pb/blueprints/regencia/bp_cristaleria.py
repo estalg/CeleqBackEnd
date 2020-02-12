@@ -1,8 +1,8 @@
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required
 
-from pb.entities.regencia.cristaleria import Cristaleria, CristaleriaSchema
-from pb.entities.entity import Session
+from ...entities.regencia.cristaleria import Cristaleria, CristaleriaSchema
+from ...entities.entity import Session
 
 bp_cristaleria = Blueprint('bp_cristaleria', __name__)
 

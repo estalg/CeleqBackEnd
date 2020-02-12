@@ -1,7 +1,7 @@
 from flask import Blueprint, make_response
 from fpdf import FPDF
-from pb.entities.regencia.cristaleria import Cristaleria, CristaleriaSchema
-from pb.entities.entity import Session
+from ...entities.regencia.cristaleria import Cristaleria, CristaleriaSchema
+from ...entities.entity import Session
 from flask_jwt_extended import jwt_required
 
 
@@ -94,7 +94,7 @@ bp_reporte_cristaleria = Blueprint('bp_reporte_cristaleria', __name__)
 
 
 @bp_reporte_cristaleria.route('/cristaleria/reporte', methods=['GET'])
-@jwt_required
+#@jwt_required
 def create_pdf():
     pdf = CustomPDF()
     pdf.alias_nb_pages()

@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request
-from pb.entities.entity import Session
-from pb.entities.unidad import Unidad, UnidadSchema
+from ..entities.entity import Session
+from ..entities.unidad import Unidad, UnidadSchema
 from flask_jwt_extended import jwt_required
 
 bp_unidad = Blueprint('bp_unidad', __name__)

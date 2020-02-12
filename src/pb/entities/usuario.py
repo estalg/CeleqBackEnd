@@ -1,6 +1,7 @@
-from sqlalchemy import Column, String
+from sqlalchemy import Column, String, ForeignKey
 from .entity import Base
 from marshmallow import Schema, fields
+from sqlalchemy.orm import relationship
 
 class Usuario(Base):
     __tablename__ = 'usuarios'

@@ -1,12 +1,13 @@
 from flask import Blueprint, request, make_response
+from flask_jwt_extended import jwt_required
 from fpdf import FPDF
-from pb.entities.regimen_becario.designacion import Designacion, DesignacionSchema
-from pb.entities.umi.estudiante import Estudiante, EstudianteSchema
-from pb.entities.usuario import Usuario, UsuarioSchema
-from pb.entities.unidad import Unidad, UnidadSchema
-from pb.entities.entity import Session
-from pb.entities.umi.p9 import P9, P9Schema
-from pb.entities.regimen_becario.arancel import Arancel, ArancelSchema
+from ...entities.regimen_becario.designacion import Designacion, DesignacionSchema
+from ...entities.umi.estudiante import Estudiante, EstudianteSchema
+from ...entities.usuario import Usuario, UsuarioSchema
+from ...entities.unidad import Unidad, UnidadSchema
+from ...entities.entity import Session
+from ...entities.umi.p9 import P9, P9Schema
+from ...entities.regimen_becario.arancel import Arancel, ArancelSchema
 from datetime import date
 
 
@@ -395,7 +396,7 @@ bp_reporte_designaciones = Blueprint('bp_reporte_designaciones', __name__)
 
 
 @bp_reporte_designaciones.route('/designacion/reporte', methods=['GET'])
-# @jwt_required
+#@jwt_required
 def create_pdf():
     tipo = request.args.get('tipo')
     anno = request.args.get('anno')

@@ -1,8 +1,8 @@
 from flask import Blueprint, jsonify, request
 
-from pb.entities.usuariosgrupos import UsuariosGrupos
-from pb.entities.entity import Session
-from pb.entities.usuario import Usuario, UsuarioSchema
+from ..entities.usuariosgrupos import UsuariosGrupos
+from ..entities.entity import Session
+from ..entities.usuario import Usuario, UsuarioSchema
 from flask_jwt_extended import jwt_required
 
 bp_usuario = Blueprint('bp_usuarios', __name__)
@@ -10,6 +10,18 @@ bp_usuario = Blueprint('bp_usuarios', __name__)
 @bp_usuario.route('/usuarios')
 @jwt_required
 def consultar_Usuario():
+    session = Session()
+    objeto_Usuario = session.query(Usuario).all()
+
+    schema = UsuarioSchema(many=True)
+    usuario = schema.dump(objeto_Usuario)
+
+    session.close()
+    return jsonify(usuario)
+
+@bp_usuario.route('/usuarios/puesto')
+@jwt_required
+def consultar_Usuarios_Por_Puesto():
     session = Session()
     objeto_Usuario = session.query(Usuario).all()
 
@@ -60,6 +72,7 @@ def agregar_usuario():
     nuevo_usuario = UsuarioSchema().dump(usuario)
     session.close()
     return jsonify(nuevo_usuario), 201
+
 
 @bp_usuario.route('/usuarios/editar', methods=['POST'])
 #@jwt_required

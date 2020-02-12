@@ -2,12 +2,12 @@ from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required
 from sqlalchemy import func
 
-from pb.entities.regencia.cristaleria import Cristaleria
-from pb.entities.regencia.reactivo import Reactivo
-from pb.entities.entity import Session
-from pb.entities.regencia.solicitud_regencia import SolicitudRegencia, SolicitudRegenciaSchema
-from pb.entities.regencia.reactivos_solicitados import ReactivosSolicitados, ReactivosSolicitadosSchema
-from pb.entities.regencia.cristaleria_solicitada import CristaleriaSolicitada, CristaleriaSolicitadaSchema
+from ...entities.regencia.cristaleria import Cristaleria
+from ...entities.regencia.reactivo import Reactivo
+from ...entities.entity import Session
+from ...entities.regencia.solicitud_regencia import SolicitudRegencia, SolicitudRegenciaSchema
+from ...entities.regencia.reactivos_solicitados import ReactivosSolicitados, ReactivosSolicitadosSchema
+from ...entities.regencia.cristaleria_solicitada import CristaleriaSolicitada, CristaleriaSolicitadaSchema
 from datetime import date
 
 bp_solicitudes_regencia = Blueprint('bp_solicitudes_regencia', __name__)

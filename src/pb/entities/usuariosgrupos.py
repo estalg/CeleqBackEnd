@@ -1,8 +1,8 @@
 from sqlalchemy import Column, String, ForeignKey
 from sqlalchemy.orm import relationship
 
-from pb.entities.grupo import GruposSchema
-from pb.entities.usuario import UsuarioSchema
+from ..entities.grupo import GruposSchema
+from ..entities.usuario import UsuarioSchema
 from .entity import Base
 from marshmallow import Schema, fields
 

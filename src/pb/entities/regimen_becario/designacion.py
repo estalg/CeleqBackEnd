@@ -1,5 +1,5 @@
 from sqlalchemy import Column, String, Integer, Date, Boolean
-from pb.entities.entity import Base
+from ...entities.entity import Base
 from marshmallow import Schema, fields
 
 
