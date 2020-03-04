@@ -37,12 +37,12 @@ def consultar_cotizacion_id():
 
 def consultar_cotizacion_ultimo_id_anno(anno: int):
     session = Session()
-    max_id = max_id = session.query(func.max(Cotizacion.id)).filter_by(anno=anno)
+    max_id = session.query(func.max(Cotizacion.id)).filter_by(anno=anno).scalar()
     session.close()
     if max_id is None:
         return 1
     else:
-        return max_id
+        return max_id + 1
 
 @bp_cotizacion.route('/cotizacion', methods=['POST'])
 @jwt_required
@@ -58,11 +58,13 @@ def agregar_cotizacion():
     r['fechaRespuesta'] = datetime.date(dateutil.parser.parse(r['fechaRespuesta']).year,
                                          dateutil.parser.parse(r['fechaRespuesta']).month,
                                          dateutil.parser.parse(r['fechaRespuesta']).day).strftime('%Y-%m-%d')
+    if(r['licitacion'] == ''):
+        r['licitacion'] = False
     # mount exam object
     posted_cotizacion = CotizacionSchema(only=('anno', 'licitacion', 'observaciones','precioMuestreo', 'descuento', 'gastosAdm',
-                                               'fechaCotizacion', 'fechaSolicitud', 'fechaRespuesta', 'saldoAfavor', 'granTotal', 'moneda',
+                                               'fechaCotizacion', 'fechaSolicitud', 'fechaRespuesta', 'iva', 'granTotal', 'moneda',
                                                'cotizador', 'cliente', 'precioMuestra', 'diasEntregaRes', 'subTotal', 'numeroMuestras',
-                                               'usuarioQuimico', 'usuarioFirmante')).load(r)
+                                               'usuarioQuimico', 'usuarioFirmante', 'cantidadNecesaria', 'unidadMedida', 'especifique')).load(r)
     posted_cotizacion['id'] = consultar_cotizacion_ultimo_id_anno(posted_cotizacion['anno'])
 
     cotizacion = Cotizacion(**posted_cotizacion)
@@ -94,9 +96,9 @@ def editar_cotizacion():
 
     posted_cotizacion = CotizacionSchema(
         only=('id', 'anno', 'licitacion', 'observaciones', 'precioMuestreo', 'descuento', 'gastosAdm',
-              'fechaCotizacion', 'fechaSolicitud', 'fechaRespuesta', 'saldoAfavor', 'granTotal', 'moneda',
+              'fechaCotizacion', 'fechaSolicitud', 'fechaRespuesta', 'iva', 'granTotal', 'moneda',
               'cotizador', 'cliente', 'precioMuestra', 'diasEntregaRes', 'subTotal', 'numeroMuestras',
-              'usuarioQuimico', 'usuarioFirmante')).load(r)
+              'usuarioQuimico', 'usuarioFirmante', 'cantidadNecesaria', 'unidadMedida', 'especifique')).load(r)
 
     cotizacion_actualizada = Cotizacion(**posted_cotizacion)
 
@@ -115,7 +117,7 @@ def editar_cotizacion():
     objeto_cotizacion.fechaCotizacion = cotizacion_actualizada.fechaCotizacion
     objeto_cotizacion.fechaSolicitud = cotizacion_actualizada.fechaSolicitud
     objeto_cotizacion.fechaRespuesta = cotizacion_actualizada.fechaRespuesta
-    objeto_cotizacion.saldoAfavor = cotizacion_actualizada.saldoAfavor
+    objeto_cotizacion.iva = cotizacion_actualizada.iva
     objeto_cotizacion.granTotal = cotizacion_actualizada.granTotal
     objeto_cotizacion.moneda = cotizacion_actualizada.moneda
     objeto_cotizacion.cotizador = cotizacion_actualizada.cotizador
@@ -126,6 +128,9 @@ def editar_cotizacion():
     objeto_cotizacion.numeroMuestras = cotizacion_actualizada.numeroMuestras
     objeto_cotizacion.usuarioQuimico = cotizacion_actualizada.usuarioQuimico
     objeto_cotizacion.usuarioFirmante = cotizacion_actualizada.usuarioFirmante
+    objeto_cotizacion.cantidadNecesaria = cotizacion_actualizada.cantidadNecesaria
+    objeto_cotizacion.unidadMedida = cotizacion_actualizada.unidadMedida
+    objeto_cotizacion.especifique = cotizacion_actualizada.especifique
 
     session.add(objeto_cotizacion)
     session.commit()
@@ -170,3 +175,16 @@ def eliminar_cotizacionAnalisis():
 
     session.close()
     return '', 200
+
+@bp_cotizacion.route('/cotizacion/analisis', methods=['GET'])
+@jwt_required
+def consultar_cotizacionAnalisis_cotizacion():
+    id = request.args.get('id')
+    anno = request.args.get('anno')
+    session = Session()
+    objeto_cotizacion = session.query(CotizacionAnalisis).filter_by(idCotizacion=id, annoCotizacion=anno).all()
+
+    schema = CotizacionAnalisisSchema(many=True)
+    cotizacion = schema.dump(objeto_cotizacion)
+    session.close()
+    return jsonify(cotizacion)

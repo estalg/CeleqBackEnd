@@ -7,7 +7,7 @@ from ...entities.vinculo_externo.precioGiras import precioGiras, precioGirasSche
 bp_precioGiras = Blueprint('bp_precioGiras', __name__)
 
 @bp_precioGiras.route('/precioGiras')
-#@jwt_required
+@jwt_required
 def consultar_precio():
     session = Session()
     objeto_precio = session.query(precioGiras).all()
@@ -19,7 +19,7 @@ def consultar_precio():
     return jsonify(precio)
 
 @bp_precioGiras.route('/precioGiras', methods=['POST'])
-#@jwt_required
+@jwt_required
 def agregar_precio():
     # mount exam object
     posted_precio = precioGirasSchema(only=('variable', 'valor')).load(request.get_json())
@@ -37,7 +37,7 @@ def agregar_precio():
     return jsonify(nuevo_precio), 201
 
 @bp_precioGiras.route('/precioGiras/editar', methods=['POST'])
-#@jwt_required
+@jwt_required
 def editar_precio():
     posted_precio = precioGirasSchema(only=('variable', 'valor')).load(request.get_json())
 

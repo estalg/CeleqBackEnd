@@ -28,6 +28,7 @@ from .pb.blueprints.vinculo_externo.bp_analisisCotizacion import bp_analisis
 from .pb.blueprints.vinculo_externo.bp_clienteCotizacion import bp_clienteCotizacion
 from .pb.blueprints.vinculo_externo.bp_cotizacion import bp_cotizacion
 from .pb.blueprints.vinculo_externo.bp_giras import bp_giras
+from .pb.blueprints.vinculo_externo.bp_webService import bp_webService
 
 # creating the Flask application
 app = Flask(__name__)
@@ -73,6 +74,7 @@ app.register_blueprint(bp_analisis)
 app.register_blueprint(bp_clienteCotizacion)
 app.register_blueprint(bp_cotizacion)
 app.register_blueprint(bp_giras)
+app.register_blueprint(bp_webService)
 
 if __name__ == '__main__':
     app.run(use_reloader=False)

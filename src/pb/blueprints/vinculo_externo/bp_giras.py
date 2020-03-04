@@ -19,10 +19,8 @@ def agregar_gira():
     session.add(gira)
     session.commit()
 
-    # return created exam
-    nueva_gira = GirasSchema().dump(gira)
     session.close()
-    return nueva_gira, 201
+    return 200
 
 @bp_giras.route('/giras/cotizacion')
 @jwt_required
@@ -33,7 +31,7 @@ def consultar_Gira_cotizacion():
     session = Session()
     objeto_Gira = session.query(Giras).filter_by(idCotizacion=idCotizacion,annoCotizacion=annoCotizacion).first()
 
-    schema = GirasSchema(many=False)
+    schema = GirasSchema()
     gira = schema.dump(objeto_Gira)
 
     session.close()

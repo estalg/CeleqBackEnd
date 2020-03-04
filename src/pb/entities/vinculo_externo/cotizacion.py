@@ -14,7 +14,8 @@ class Cotizacion(Base):
     fechaCotizacion = Column(Date)
     fechaSolicitud = Column(Date)
     fechaRespuesta = Column(Date)
-    saldoAfavor = Column(Float)
+    observaciones = Column(String)
+    iva = Column(Float)
     granTotal = Column(Float)
     moneda = Column(CHAR)
     cotizador = Column(String)
@@ -25,9 +26,13 @@ class Cotizacion(Base):
     numeroMuestras = Column(Integer)
     usuarioQuimico = Column(String)
     usuarioFirmante = Column(String)
+    cantidadNecesaria = Column(Integer)
+    unidadMedida = Column(String)
+    especifique = Column(String)
 
-    def __init__(self, id, anno, licitacion, precioMuestreo, descuento, gastosAdm, fechaCotizacion, fechaSolicitud, fechaRespuesta, saldoAfavor,
-                 granTotal, moneda, cotizador, cliente, precioMuestra, diasEntregaRes, subTotal, numeroMuestras, usuarioQuimico, usuarioFirmante):
+    def __init__(self, id, anno, licitacion, precioMuestreo, descuento, gastosAdm, fechaCotizacion, fechaSolicitud, fechaRespuesta, observaciones, iva,
+                 granTotal, moneda, cotizador, cliente, precioMuestra, diasEntregaRes, subTotal, numeroMuestras, usuarioQuimico, usuarioFirmante, cantidadNecesaria,
+                 unidadMedida, especifique):
         self.id = id
         self.anno = anno
         self.licitacion = licitacion
@@ -37,7 +42,7 @@ class Cotizacion(Base):
         self.fechaCotizacion = fechaCotizacion
         self.fechaSolicitud = fechaSolicitud
         self.fechaRespuesta = fechaRespuesta
-        self.saldoAfavor = saldoAfavor
+        self.iva = iva
         self.granTotal = granTotal
         self.moneda = moneda
         self.cotizador = cotizador
@@ -48,6 +53,10 @@ class Cotizacion(Base):
         self.numeroMuestras = numeroMuestras
         self.usuarioQuimico = usuarioQuimico
         self.usuarioFirmante = usuarioFirmante
+        self.observaciones = observaciones
+        self.cantidadNecesaria = cantidadNecesaria
+        self.unidadMedida = unidadMedida
+        self.especifique = especifique
 
 class CotizacionSchema(Schema):
     id = fields.Int()
@@ -59,7 +68,7 @@ class CotizacionSchema(Schema):
     fechaCotizacion = fields.Date()
     fechaSolicitud = fields.Date()
     fechaRespuesta = fields.Date()
-    saldoAfavor = fields.Float()
+    iva = fields.Float()
     granTotal = fields.Float()
     moneda = fields.Str()
     cotizador = fields.Str()
@@ -70,6 +79,10 @@ class CotizacionSchema(Schema):
     numeroMuestras = fields.Int()
     usuarioQuimico = fields.Str()
     usuarioFirmante = fields.Str()
+    observaciones = fields.Str()
+    cantidadNecesaria = fields.Int()
+    unidadMedida = fields.Str()
+    especifique = fields.Str()
 
 class CotizacionAnalisis(Base):
     __tablename__ = 'CotizacionAnalisis'
